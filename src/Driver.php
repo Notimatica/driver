@@ -150,7 +150,7 @@ class Driver
      *
      * @throws \RuntimeException
      */
-    private function validate()
+    protected function validate()
     {
         if (is_null($this->notification)) {
             throw new \RuntimeException("Notification wasn't set.");
