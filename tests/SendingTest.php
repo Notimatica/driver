@@ -5,7 +5,7 @@ namespace Notimatica\Driver\Tests;
 use Notimatica\Driver\Driver;
 use Notimatica\Driver\Project;
 
-class ExampleTest extends TestCase
+class SendingTest extends TestCase
 {
     /**
      * @test

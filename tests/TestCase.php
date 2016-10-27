@@ -8,6 +8,7 @@ use Notimatica\Driver\Project;
 use Notimatica\Driver\Providers\Chrome;
 use Notimatica\Driver\Providers\Firefox;
 use Notimatica\Driver\Providers\Safari;
+use ReflectionClass;
 
 abstract class TestCase extends \PHPUnit_Framework_TestCase
 {
@@ -21,6 +22,43 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         $this->config = require __DIR__ . '/../src/config/notimatica.php';
 
         parent::setUp();
+    }
+
+    /**
+     * Make protected/private class property accessible.
+     *
+     * @param  string|object $class
+     * @param  string $name
+     * @return \ReflectionProperty
+     */
+    protected function getPublicProperty($class, $name)
+    {
+        if ( ! is_string($class))
+        {
+            $class = get_class($class);
+        }
+        $class    = new ReflectionClass($class);
+        $property = $class->getProperty($name);
+        $property->setAccessible(true);
+        return $property;
+    }
+    /**
+     * Make protected/private class method accessible.
+     *
+     * @param  string $name
+     * @param  string|object $class
+     * @return \ReflectionMethod
+     */
+    protected function getPublicMethod($name, $class)
+    {
+        if ( ! is_string($class))
+        {
+            $class = get_class($class);
+        }
+        $class  = new ReflectionClass($class);
+        $method = $class->getMethod($name);
+        $method->setAccessible(true);
+        return $method;
     }
 
     /**
