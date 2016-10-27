@@ -1,4 +1,6 @@
-<?php namespace Notimatica\Driver\Apns;
+<?php
+
+namespace Notimatica\Driver\Apns;
 
 use App\Project;
 use Illuminate\Contracts\Filesystem\Filesystem;
@@ -66,7 +68,7 @@ class Package
     }
 
     /**
-     * Generate zip package
+     * Generate zip package.
      */
     public function generate()
     {
@@ -153,7 +155,7 @@ class Package
         $password = $this->certificate->getPassword();
 
         $certs = [];
-        if (!openssl_pkcs12_read($pkcs12, $certs, $password)) {
+        if (! openssl_pkcs12_read($pkcs12, $certs, $password)) {
             throw new \RuntimeException(openssl_error_string());
         }
 
@@ -164,12 +166,12 @@ class Package
         // Sign the manifest.json file with the private key from the certificate
         $certificateData = openssl_x509_read($certs['cert']);
         $privateKey = openssl_pkey_get_private($certs['pkey'], $password);
-        openssl_pkcs7_sign($manifestPath, $signaturePath, $certificateData, $privateKey, array(), PKCS7_BINARY | PKCS7_DETACHED);
+        openssl_pkcs7_sign($manifestPath, $signaturePath, $certificateData, $privateKey, [], PKCS7_BINARY | PKCS7_DETACHED);
 
         // Convert the signature from PEM to DER
         $signature_pem = file_get_contents($signaturePath);
         $matches = [];
-        if (!preg_match('~Content-Disposition:[^\n]+\s*?([A-Za-z0-9+=/\r\n]+)\s*?-----~', $signature_pem, $matches)) {
+        if (! preg_match('~Content-Disposition:[^\n]+\s*?([A-Za-z0-9+=/\r\n]+)\s*?-----~', $signature_pem, $matches)) {
             throw new \RuntimeException(openssl_error_string());
         }
 

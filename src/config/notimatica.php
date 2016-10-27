@@ -2,7 +2,7 @@
 
 return [
     'providers' => [
-        \Notimatica\Driver\Providers\Chrome::NAME=> [
+        \Notimatica\Driver\Providers\Chrome::NAME => [
             'ttl' => 86400,
             'batch_chunk_size' => 1000,
             'url' => 'https://android.googleapis.com/gcm/send',

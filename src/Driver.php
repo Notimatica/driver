@@ -129,7 +129,9 @@ class Driver
         foreach ($this->subscribers as $subscriber) {
             $provider = $subscriber->getProvider();
 
-            if (! $this->project->providerConnected($provider)) continue;
+            if (! $this->project->providerConnected($provider)) {
+                continue;
+            }
 
             if (! isset($partials[$provider])) {
                 $partials[$provider] = [];
@@ -155,7 +157,7 @@ class Driver
         }
 
         if (is_null($this->subscribers)) {
-            throw new \RuntimeException("No subscribers set.");
+            throw new \RuntimeException('No subscribers set.');
         }
     }
 }

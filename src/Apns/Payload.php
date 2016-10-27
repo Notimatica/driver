@@ -1,4 +1,6 @@
-<?php namespace Notimatica\Driver\Apns;
+<?php
+
+namespace Notimatica\Driver\Apns;
 
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Str;
@@ -25,9 +27,9 @@ class Payload implements \JsonSerializable, Arrayable
     }
 
     /**
-     * Specify data which should be serialized to JSON
+     * Specify data which should be serialized to JSON.
      */
-    function jsonSerialize()
+    public function jsonSerialize()
     {
         return $this->toArray();
     }

@@ -1,6 +1,7 @@
-<?php namespace Notimatica\Driver\Contracts;
+<?php
+
+namespace Notimatica\Driver\Contracts;
 
 interface NotificationRepository
 {
-
 }

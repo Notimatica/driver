@@ -1,4 +1,6 @@
-<?php namespace Notimatica\Driver;
+<?php
+
+namespace Notimatica\Driver;
 
 use Notimatica\Driver\Providers\AbstractProvider;
 use Notimatica\Driver\Providers\Chrome;
@@ -47,8 +49,7 @@ class ProvidersFactory
      */
     public function make($name, array $options = [])
     {
-        switch ($name)
-        {
+        switch ($name) {
             case Chrome::NAME:
                 $return = new Chrome($options);
                 break;
@@ -78,7 +79,9 @@ class ProvidersFactory
      */
     protected function resolveExtends($name, array $options)
     {
-        if (empty(static::$resolvers[$name])) return null;
+        if (empty(static::$resolvers[$name])) {
+            return;
+        }
 
         return call_user_func(static::$resolvers[$name], $options);
     }

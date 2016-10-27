@@ -1,4 +1,6 @@
-<?php namespace Notimatica\Driver\Events;
+<?php
+
+namespace Notimatica\Driver\Events;
 
 use League\Event\AbstractEvent;
 use Notimatica\Driver\Contracts\Notification;

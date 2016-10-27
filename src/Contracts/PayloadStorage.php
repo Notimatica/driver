@@ -1,4 +1,6 @@
-<?php namespace Notimatica\Driver\Contracts;
+<?php
+
+namespace Notimatica\Driver\Contracts;
 
 interface PayloadStorage
 {
@@ -15,7 +17,7 @@ interface PayloadStorage
      *
      * @param string $subscriber
      * @param string $notification
-     * @param integer $lifetime
+     * @param int $lifetime
      */
     public function assignNotificationToSubscriber($subscriber, $notification, $lifetime);
 }

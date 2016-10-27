@@ -1,4 +1,6 @@
-<?php namespace Notimatica\Driver;
+<?php
+
+namespace Notimatica\Driver;
 
 use Notimatica\Driver\StatisticsStorages\AbstractStorage;
 use Notimatica\Driver\StatisticsStorages\Model;
@@ -29,8 +31,7 @@ class StatisticsStoragesFactory
      */
     public function make($name)
     {
-        switch ($name)
-        {
+        switch ($name) {
             case Model::NAME:
                 $return = new Model();
                 break;
@@ -53,7 +54,9 @@ class StatisticsStoragesFactory
      */
     protected function resolveExtends($name)
     {
-        if (empty(static::$resolvers[$name])) return null;
+        if (empty(static::$resolvers[$name])) {
+            return;
+        }
 
         return call_user_func(static::$resolvers[$name]);
     }

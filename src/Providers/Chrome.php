@@ -114,7 +114,7 @@ class Chrome extends AbstractProvider
     }
 
     /**
-     * Calculate chunk size. FUUUUUU!!!11
+     * Calculate chunk size. FUUUUUU!!!11.
      *
      * @param  int $count
      * @param  int $index

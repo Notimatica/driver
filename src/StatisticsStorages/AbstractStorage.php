@@ -1,4 +1,6 @@
-<?php namespace Notimatica\Driver\StatisticsStorages;
+<?php
+
+namespace Notimatica\Driver\StatisticsStorages;
 
 use League\Event\ListenerAcceptorInterface;
 use League\Event\ListenerProviderInterface;
@@ -40,23 +42,23 @@ abstract class AbstractStorage implements ListenerProviderInterface
     abstract public function failed(NotificationFailed $event);
 
     /**
-     * Provide event
+     * Provide event.
      *
      * @param  ListenerAcceptorInterface $listener
      * @return $this
      */
     public function provideListeners(ListenerAcceptorInterface $listener)
     {
-        $listener->addListener(NotificationSent::class, function($e) {
+        $listener->addListener(NotificationSent::class, function ($e) {
             $this->sent($e);
         });
-        $listener->addListener(NotificationDelivered::class, function($e) {
+        $listener->addListener(NotificationDelivered::class, function ($e) {
             $this->delivered($e);
         });
-        $listener->addListener(NotificationClicked::class, function($e) {
+        $listener->addListener(NotificationClicked::class, function ($e) {
             $this->clicked($e);
         });
-        $listener->addListener(NotificationFailed::class, function($e) {
+        $listener->addListener(NotificationFailed::class, function ($e) {
             $this->failed($e);
         });
 

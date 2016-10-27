@@ -1,4 +1,6 @@
-<?php namespace Notimatica\Driver\Support;
+<?php
+
+namespace Notimatica\Driver\Support;
 
 use League\Event\Emitter;
 use League\Event\EventInterface;

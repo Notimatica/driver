@@ -1,4 +1,6 @@
-<?php namespace Notimatica\Driver\Tests;
+<?php
+
+namespace Notimatica\Driver\Tests;
 
 use Notimatica\Driver\Contracts\Notification;
 use Notimatica\Driver\Contracts\Subscriber;
@@ -16,7 +18,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->config = require(__DIR__ . '/../src/config/notimatica.php');
+        $this->config = require __DIR__ . '/../src/config/notimatica.php';
 
         parent::setUp();
     }

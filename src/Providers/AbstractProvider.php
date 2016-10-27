@@ -81,8 +81,12 @@ abstract class AbstractProvider
      */
     protected function flush(array $subscribers, \Closure $success = null, \Closure $fail = null)
     {
-        if (is_null($success)) $success = function ($response, $index) {};
-        if (is_null($fail)) $fail = function ($reason, $index) {};
+        if (is_null($success)) {
+            $success = function ($response, $index) {};
+        }
+        if (is_null($fail)) {
+            $fail = function ($reason, $index) {};
+        }
 
         $pool = new Pool(static::$browser, $this->prepareRequests($subscribers), [
             'concurrency' => $this->config['concurrent_requests'],

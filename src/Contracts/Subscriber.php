@@ -1,4 +1,6 @@
-<?php namespace Notimatica\Driver\Contracts;
+<?php
+
+namespace Notimatica\Driver\Contracts;
 
 interface Subscriber
 {

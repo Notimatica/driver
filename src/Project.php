@@ -1,4 +1,6 @@
-<?php namespace Notimatica\Driver;
+<?php
+
+namespace Notimatica\Driver;
 
 use Notimatica\Driver\Providers\AbstractProvider;
 

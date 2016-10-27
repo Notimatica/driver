@@ -1,4 +1,6 @@
-<?php namespace Notimatica\Driver\Tests;
+<?php
+
+namespace Notimatica\Driver\Tests;
 
 use Notimatica\Driver\Contracts\Notification;
 use Notimatica\Driver\Contracts\Subscriber;

@@ -1,4 +1,6 @@
-<?php namespace Notimatica\Driver\Apns;
+<?php
+
+namespace Notimatica\Driver\Apns;
 
 class Streamer
 {
@@ -20,7 +22,7 @@ class Streamer
     private $apnsResource;
 
     /**
-     * @var integer
+     * @var int
      */
     private $error;
 
@@ -45,7 +47,7 @@ class Streamer
      * Writes a binary message to apns.
      *
      * @param  string $binaryMessage
-     * @return integer Returns the number of bytes written, or FALSE on error.
+     * @return int Returns the number of bytes written, or FALSE on error.
      * @throws \InvalidArgumentException
      */
     public function write($binaryMessage)
@@ -68,7 +70,7 @@ class Streamer
      */
     protected function getApnsResource()
     {
-        if (!is_resource($this->apnsResource)) {
+        if (! is_resource($this->apnsResource)) {
             $this->apnsResource = $this->createStreamClient();
         }
 
@@ -89,7 +91,7 @@ class Streamer
     }
 
     /**
-     * Create stream client
+     * Create stream client.
      *
      * @return Resource
      */

@@ -19,7 +19,7 @@ class ExampleTest extends TestCase
         $notification->shouldReceive('increment')->with('clicked', 1);
 
         $driver->send($notification)->to([
-            $this->makeChromeSubscriber()
+            $this->makeChromeSubscriber(),
         ])->flush();
     }
 }

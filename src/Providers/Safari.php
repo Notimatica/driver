@@ -94,7 +94,7 @@ class Safari extends AbstractProvider
         $website = [
             'websiteName' => $this->project->name,
             'websitePushID' => $this->provider->config['website_push_id'],
-            'allowedDomains' => [$this->project->base_url, "https://{$this->project->subdomain}.notimatica.io", "https://dev.notimatica.io"],
+            'allowedDomains' => [$this->project->base_url, "https://{$this->project->subdomain}.notimatica.io", 'https://dev.notimatica.io'],
             'urlFormatString' => "https://{$this->project->subdomain}.notimatica.io/go/%@",
             'authenticationToken' => Uuid::uuid4(),
             'webServiceURL' => sprintf('https://api.notimatica.io/v1/projects/%s/safari', $this->project->uuid),

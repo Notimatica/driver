@@ -1,4 +1,6 @@
-<?php namespace Notimatica\Driver\Apns;
+<?php
+
+namespace Notimatica\Driver\Apns;
 
 use App\Project;
 use Illuminate\Contracts\Filesystem\Filesystem;
@@ -62,7 +64,7 @@ class Certificate
         try {
             return $this->storage->get($this->filePath('p12'));
         } catch (\Exception $e) {
-            return null;
+            return;
         }
     }
 
@@ -87,7 +89,7 @@ class Certificate
         try {
             return $this->storage->get($this->filePath('password'));
         } catch (\Exception $e) {
-            return null;
+            return;
         }
     }
 
@@ -102,7 +104,7 @@ class Certificate
 
         $password = $this->getPassword();
 
-        if (!openssl_pkcs12_read($this->getP12Certificate(), $certificate, $password)) {
+        if (! openssl_pkcs12_read($this->getP12Certificate(), $certificate, $password)) {
             dd(openssl_error_string());
         }
 
@@ -131,7 +133,7 @@ class Certificate
         try {
             return $this->storage->get($this->filePath('pem'));
         } catch (\Exception $e) {
-            return null;
+            return;
         }
     }
 

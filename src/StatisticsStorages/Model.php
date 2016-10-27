@@ -1,4 +1,6 @@
-<?php namespace Notimatica\Driver\StatisticsStorages;
+<?php
+
+namespace Notimatica\Driver\StatisticsStorages;
 
 use Notimatica\Driver\Events\NotificationClicked;
 use Notimatica\Driver\Events\NotificationDelivered;
