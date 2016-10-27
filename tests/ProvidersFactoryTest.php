@@ -32,47 +32,9 @@ class ProvidersFactoryTest extends TestCase
         $factory = new ProvidersFactory($this->makeProject());
 
         ProvidersFactory::extend('foo', function () {
-           return new FooProvider();
+           return \Mockery::namedMock('FooProvider', AbstractProvider::class)->makePartial();
         });
 
-        $this->assertInstanceOf(FooProvider::class, $factory->make(FooProvider::NAME));
-    }
-}
-
-class FooProvider extends AbstractProvider
-{
-    const NAME = 'foo';
-
-    /**
-     * Send notification.
-     *
-     * @param  Notification $notification
-     * @param  Subscriber[] $subscribers
-     */
-    public function send(Notification $notification, array $subscribers)
-    {
-        // TODO: Implement send() method.
-    }
-
-    /**
-     * Distribute connection package.
-     *
-     * @param array $extra
-     */
-    public function connectionPackage($extra = [])
-    {
-        // TODO: Implement connectionPackage() method.
-    }
-
-    /**
-     * Send request.
-     *
-     * @param  array $subscribers
-     * @param  mixed $payload
-     * @return \Generator
-     */
-    protected function prepareRequests($subscribers, $payload = null)
-    {
-        // TODO: Implement prepareRequests() method.
+        $this->assertInstanceOf('FooProvider', $factory->make('foo'));
     }
 }
