@@ -29,4 +29,20 @@ class DriverTest extends TestCase
         $this->assertInternalType('array', $splitSubscribers->invoke($driver));
         $this->assertCount(1, $splitSubscribers->invoke($driver));
     }
+
+    /**
+     * @test
+     */
+    public function it_validates_input_data()
+    {
+        $driver = $this->makeDriver();
+
+        $this->setExpectedException(\RuntimeException::class, "Notification wasn't set.");
+        $driver->flush();
+
+        $this->setExpectedException(\RuntimeException::class, "No subscribers set.");
+        $driver->send($this->makeNotification())->flush();
+
+        $driver->send($this->makeNotification())->to([])->flush();
+    }
 }

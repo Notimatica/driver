@@ -110,7 +110,7 @@ class Driver
      * @return AbstractProvider
      * @throws \RuntimeException
      */
-    public function provider($name)
+    protected function provider($name)
     {
         return $this->project->getProvider($name);
     }
