@@ -82,14 +82,12 @@ class Driver
         $this->validate();
 
         $partials = $this->splitSubscribers();
-
-        var_dump($partials);
-
+        
         foreach ($partials as $provider => $subscribers) {
             try {
                 $this->provider($provider)->send($this->notification, $subscribers);
             } catch (\RuntimeException $e) {
-                static::$events->emit('flush.exception', $e);
+                static::emitEvent('flush.exception', $e);
             }
         }
     }
