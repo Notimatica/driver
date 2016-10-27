@@ -1,0 +1,23 @@
+{
+    "name": "notimatica/driver",
+    "autoload": {
+        "psr-4": {
+            "Notimatica\\Driver\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=5.6.4",
+        "maennchen/zipstream-php": "^0.3.1",
+        "guzzlehttp/guzzle": "^6.2",
+        "league/event": "^2.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "4.*",
+        "mockery/mockery": "^0.9.5"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Notimatica\\Driver\\Tests\\": "tests/"
+        }
+    }
+}
