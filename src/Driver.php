@@ -82,7 +82,7 @@ class Driver
         $this->validate();
 
         $partials = $this->splitSubscribers();
-        
+
         foreach ($partials as $provider => $subscribers) {
             try {
                 $this->provider($provider)->send($this->notification, $subscribers);
@@ -137,7 +137,9 @@ class Driver
 
             $partials[$provider][] = $subscriber;
 
-            $this->payloadStorage->assignNotificationToSubscriber($subscriber, $this->notification);
+            if ($this->payloadStorage) {
+                $this->payloadStorage->assignNotificationToSubscriber($subscriber, $this->notification);
+            }
         }
 
         return $partials;
@@ -155,7 +157,7 @@ class Driver
         }
 
         if (is_null($this->subscribers)) {
-            throw new \RuntimeException('No subscribers set.');
+            throw new \RuntimeException("No subscribers set.");
         }
     }
 }

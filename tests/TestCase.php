@@ -4,6 +4,7 @@ namespace Notimatica\Driver\Tests;
 
 use Notimatica\Driver\Contracts\Notification;
 use Notimatica\Driver\Contracts\Subscriber;
+use Notimatica\Driver\Driver;
 use Notimatica\Driver\Project;
 use Notimatica\Driver\Providers\Chrome;
 use Notimatica\Driver\Providers\Firefox;
@@ -70,6 +71,14 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @return Driver
+     */
+    protected function makeDriver()
+    {
+        return new Driver($this->makeProject());
+    }
+
+    /**
      * @return \Mockery\MockInterface|Notification
      */
     protected function makeNotification()
@@ -89,7 +98,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     {
         $subscriber = \Mockery::mock(Subscriber::class);
         $subscriber->shouldReceive('getUuid')->andReturn('a060f737-a83a-465a-bcc9-26e5c4a2cea4');
-        $subscriber->shouldReceive('getProvider')->andReturn(Chrome::class);
+        $subscriber->shouldReceive('getProvider')->andReturn(Chrome::NAME);
         $subscriber->shouldReceive('getToken')->andReturn('111122223333qqqwweee');
 
         return $subscriber;
@@ -102,7 +111,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     {
         $subscriber = \Mockery::mock(Subscriber::class);
         $subscriber->shouldReceive('getUuid')->andReturn('4efcb6c1-6b0e-465d-bb2a-a1a579b92919');
-        $subscriber->shouldReceive('getProvider')->andReturn(Firefox::class);
+        $subscriber->shouldReceive('getProvider')->andReturn(Firefox::NAME);
         $subscriber->shouldReceive('getToken')->andReturn('111122223333qqqwweee');
 
         return $subscriber;
@@ -115,7 +124,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     {
         $subscriber = \Mockery::mock(Subscriber::class);
         $subscriber->shouldReceive('getUuid')->andReturn('b253c0f9-1a71-4349-942d-61569224278b');
-        $subscriber->shouldReceive('getProvider')->andReturn(Safari::class);
+        $subscriber->shouldReceive('getProvider')->andReturn(Safari::NAME);
         $subscriber->shouldReceive('getToken')->andReturn('111122223333qqqwweee');
 
         return $subscriber;
