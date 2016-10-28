@@ -1,5 +1,15 @@
 {
     "name": "notimatica/driver",
+    "description": "Web push notifications sending server-side driver. Chrome, Firefox and Safari support.",
+    "keywords": ["push", "notifications", "driver", "chrome", "firefox", "safari"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Maxim Lanin",
+            "email": "max@lanin.me",
+            "homepage": "https://blog.lanin.me"
+        }
+    ],
     "autoload": {
         "psr-4": {
             "Notimatica\\Driver\\": "src/"
