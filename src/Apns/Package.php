@@ -42,11 +42,6 @@ class Package
     protected $zip;
 
     /**
-     * @var Project
-     */
-    private $project;
-
-    /**
      * @var Filesystem
      */
     private $storage;
@@ -55,14 +50,12 @@ class Package
      * Create a new Package.
      *
      * @param array $website
-     * @param Project $project
      * @param Certificate $certificate
      * @param Filesystem $storage
      */
-    public function __construct($website, Project $project, Certificate $certificate, Filesystem $storage)
+    public function __construct($website, Certificate $certificate, Filesystem $storage)
     {
         $this->website = $website;
-        $this->project = $project;
         $this->certificate = $certificate;
         $this->storage = $storage;
     }
@@ -83,7 +76,7 @@ class Package
             return false;
         }
 
-        $this->addWebsite();
+        $this->addWebsiteJson();
         $this->addIcons();
         $this->addManifest();
         $this->addSignature();
@@ -94,7 +87,7 @@ class Package
     /**
      * Add website.json.
      */
-    protected function addWebsite()
+    protected function addWebsiteJson()
     {
         $this->addString('website.json', json_encode($this->website));
     }

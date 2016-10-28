@@ -99,10 +99,7 @@ class Safari extends AbstractProvider
         array_merge($website, $extra);
 
         $package = new Package(
-            $website,
-            $this->project,
-            $certificate,
-            $this->storage
+            $website, $certificate, $this->storage
         );
 
         return $package->generate();
