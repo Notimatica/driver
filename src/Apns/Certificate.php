@@ -24,7 +24,6 @@ class Certificate
      * Create a new Certificate.
      *
      * @param Filesystem $storage
-     * @internal param Project $project
      */
     public function __construct(Filesystem $storage)
     {
