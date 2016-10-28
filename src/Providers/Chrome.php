@@ -180,7 +180,7 @@ class Chrome extends AbstractProvider
      *
      * @return string
      */
-    protected function manifest()
+    public function manifest()
     {
         return json_encode([
             'name' => $this->project->name,
