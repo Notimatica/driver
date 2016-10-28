@@ -6,8 +6,8 @@ return [
             'api_key' => '',
             'sender_id' => '',
             'ttl' => 86400,
-            'batch_chunk_size' => 1000,
             'url' => 'https://android.googleapis.com/gcm/send',
+            'batch_chunk_size' => 1000,
             'concurrent_requests' => 10,
         ],
         \Notimatica\Driver\Providers\Firefox::NAME => [
@@ -22,11 +22,6 @@ return [
             'package_path' => null,
             'url' => 'ssl://gateway.push.apple.com:2195',
         ],
-    ],
-    'payload' => [
-        'storage' => 'cache',
-        'payload_lifetime' => 86400,
-        'subscriber_lifetime' => 86400,
     ],
     'statistics' => [
         'storage' => \Notimatica\Driver\StatisticsStorages\Model::NAME,

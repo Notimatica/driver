@@ -74,7 +74,7 @@ class Package
     {
         $packagePath = $this->storage->getAdapter()->applyPathPrefix(static::PACKAGE_FILENAME);
 
-        if ($this->storage->exists(static::PACKAGE_FILENAME)) {
+        if ($this->storage->has(static::PACKAGE_FILENAME)) {
             return $packagePath;
         }
 
