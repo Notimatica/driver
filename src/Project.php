@@ -80,7 +80,7 @@ class Project
      */
     public function buildProviders()
     {
-        $providersFactory = new ProvidersFactory($this);
+        $providersFactory = new ProvidersFactory();
 
         if (! empty($this->config['providers']) && is_array($this->config['providers'])) {
             foreach ($this->config['providers'] as $name => $options) {
