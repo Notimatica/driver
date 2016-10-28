@@ -15,10 +15,27 @@ use ReflectionClass;
 
 abstract class TestCase extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var array
+     */
+    protected $config;
 
     protected function setUp()
     {
+        $this->config = require __DIR__ . '/../src/config/notimatica.php';
+        $this->setConfig(
+            'providers.' . Safari::NAME . '.storage_root',
+            __DIR__ . '/tmp/safari_push_data'
+        );
+
         parent::setUp();
+    }
+
+    protected function tearDown()
+    {
+        $this->config = null;
+
+        parent::tearDown();
     }
 
     /**
@@ -30,10 +47,10 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
      */
     protected function getPublicProperty($class, $name)
     {
-        if ( ! is_string($class))
-        {
+        if (! is_string($class)) {
             $class = get_class($class);
         }
+
         $class    = new ReflectionClass($class);
         $property = $class->getProperty($name);
         $property->setAccessible(true);
@@ -48,10 +65,10 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
      */
     protected function getPublicMethod($name, $class)
     {
-        if ( ! is_string($class))
-        {
+        if (! is_string($class)) {
             $class = get_class($class);
         }
+
         $class  = new ReflectionClass($class);
         $method = $class->getMethod($name);
         $method->setAccessible(true);
@@ -62,17 +79,37 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
      * Returns config.
      *
      * @param  string $key
-     * @return array
+     * @return mixed
      */
     protected function getConfig($key = null)
     {
-        $config = require __DIR__ . '/../src/config/notimatica.php';
+        if (is_null($key)) return $this->config;
 
-        $config['providers'][Safari::NAME]['storage_root'] = __DIR__ . '/tmp/safari_push_data';
+        $config = &$this->config;
+        foreach(explode('.', $key) as $step)
+        {
+            $config = &$config[$step];
+        }
 
-        return ! is_null($key)
-            ? $config[$key]
-            : $config;
+        return $config;
+    }
+
+    /**
+     * Set config value.
+     *
+     * @param  string $key
+     * @param  mixed $value
+     * @return mixed
+     */
+    protected function setConfig($key, $value)
+    {
+        $config = &$this->config;
+        foreach(explode('.', $key) as $step)
+        {
+            $config = &$config[$step];
+        }
+
+        return $config = $value;
     }
 
     /**
@@ -106,7 +143,8 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         $config = $this->getConfig('providers');
         $factory = new ProvidersFactory();
 
-        return $factory->make($provider, $config[$provider]);
+        return $factory->make($provider, $config[$provider])
+            ->setProject($this->makeProject());
     }
 
     /**

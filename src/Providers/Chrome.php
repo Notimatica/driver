@@ -64,11 +64,11 @@ class Chrome extends AbstractProvider
     public function send(Notification $notification, array $subscribers)
     {
         static::initBrowser($this->config);
-        $count = count($subscribers);
+        $total = count($subscribers);
 
         $this->flush(
             $subscribers,
-            function (Response $response, $index) use ($notification, $count) {
+            function (Response $response, $index) use ($notification, $total) {
                 try {
                     $response = json_decode($response->getBody());
 
@@ -84,11 +84,13 @@ class Chrome extends AbstractProvider
                         Driver::emitEvent(new NotificationFailed($notification, (int) $response->failure));
                     }
                 } catch (\Exception $e) {
-                    Driver::emitEvent(new NotificationFailed($notification, $this->calculateChunkSize($count, $index)));
+                    Driver::emitEvent(new NotificationFailed($notification, $this->calculateChunkSize($index,
+                        $total)));
                 }
             },
-            function ($reason, $index) use ($notification, $count) {
-                Driver::emitEvent(new NotificationFailed($notification, $this->calculateChunkSize($count, $index)));
+            function ($reason, $index) use ($notification, $total) {
+                Driver::emitEvent(new NotificationFailed($notification, $this->calculateChunkSize($index,
+                    $total)));
             }
         );
     }
@@ -115,27 +117,25 @@ class Chrome extends AbstractProvider
 
     /**
      * Calculate chunk size.
+     * Problem is, we don't know the latter chunk size.
      *
-     *
-     *
-     *
-     * @param  int $count
      * @param  int $index
+     * @param  int $total
      * @return int
      */
-    protected function calculateChunkSize($count, $index)
+    protected function calculateChunkSize($index, $total)
     {
         $chunkSize = (int) $this->config['batch_chunk_size'];
 
         $offset = ($index + 1) * $chunkSize;
-        $chunks = ceil($count / $chunkSize);
+        $chunks = ceil($total / $chunkSize);
 
-        if ($offset <= $count) {
+        if ($offset <= $total) {
             $return = $chunkSize;
-        } elseif ($offset > $count + $chunkSize) {
+        } elseif ($offset > $total + $chunkSize) {
             $return = 0;
         } else {
-            $return = $count - ($chunks - 1) * $chunkSize;
+            $return = $total - ($chunks - 1) * $chunkSize;
         }
 
         return (int) $return;
