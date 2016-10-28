@@ -4,7 +4,6 @@ namespace Notimatica\Driver\Providers;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Pool;
-use Notimatica\Driver\Contracts\FilesStorage;
 use Notimatica\Driver\Contracts\Notification;
 use Notimatica\Driver\Contracts\Subscriber;
 use Notimatica\Driver\Project;
@@ -17,10 +16,6 @@ abstract class AbstractProvider
      * @var Project
      */
     protected $project;
-    /**
-     * @var FilesStorage
-     */
-    protected $fileStorage;
     /**
      * @var array
      */
@@ -49,19 +44,6 @@ abstract class AbstractProvider
     public function setProject(Project $project)
     {
         $this->project  = $project;
-
-        return $this;
-    }
-
-    /**
-     * Set files storage.
-     *
-     * @param  FilesStorage $filesStorage
-     * @return $this
-     */
-    public function setStorage(FilesStorage $filesStorage)
-    {
-        $this->fileStorage = $filesStorage;
 
         return $this;
     }

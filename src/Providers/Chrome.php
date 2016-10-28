@@ -114,7 +114,10 @@ class Chrome extends AbstractProvider
     }
 
     /**
-     * Calculate chunk size. FUUUUUU!!!11.
+     * Calculate chunk size.
+     *
+     *
+     *
      *
      * @param  int $count
      * @param  int $index
@@ -122,19 +125,17 @@ class Chrome extends AbstractProvider
      */
     protected function calculateChunkSize($count, $index)
     {
-        $chunk = (int) $this->config['batch_chunk_size'];
+        $chunkSize = (int) $this->config['batch_chunk_size'];
 
-        $index++;
+        $offset = ($index + 1) * $chunkSize;
+        $chunks = ceil($count / $chunkSize);
 
-        $multiply = $index * $chunk;
-        $chunks = ceil($count / $chunk);
-
-        if ($multiply <= $count) {
-            $return = $chunk;
-        } elseif ($multiply > $count + $chunk) {
+        if ($offset <= $count) {
+            $return = $chunkSize;
+        } elseif ($offset > $count + $chunkSize) {
             $return = 0;
         } else {
-            $return = $count - ($chunks - 1) * $chunk;
+            $return = $count - ($chunks - 1) * $chunkSize;
         }
 
         return (int) $return;

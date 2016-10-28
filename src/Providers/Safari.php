@@ -2,8 +2,7 @@
 
 namespace Notimatica\Driver\Providers;
 
-use Illuminate\Contracts\Filesystem\Factory;
-use Illuminate\Contracts\Filesystem\Filesystem;
+use League\Flysystem\Filesystem;
 use Notimatica\Driver\Apns\Certificate;
 use Notimatica\Driver\Apns\Package;
 use Notimatica\Driver\Apns\Payload;
@@ -13,7 +12,6 @@ use Notimatica\Driver\Contracts\Subscriber;
 use Notimatica\Driver\Driver;
 use Notimatica\Driver\Events\NotificationFailed;
 use Notimatica\Driver\Events\NotificationSent;
-use Ramsey\Uuid\Uuid;
 use ZipStream\ZipStream;
 
 class Safari extends AbstractProvider
@@ -23,22 +21,17 @@ class Safari extends AbstractProvider
     /**
      * @var Filesystem
      */
-    protected $localStorage;
-    /**
-     * @var Filesystem
-     */
-    protected $publicStorage;
+    protected $storage;
 
     /**
-     * Set storage.
+     * Set files storage.
      *
-     * @param  Factory $storage
+     * @param  Filesystem $filesStorage
      * @return $this
      */
-    public function setStorage(Factory $storage)
+    public function setStorage(Filesystem $filesStorage)
     {
-        $this->localStorage = $storage->disk($this->config['local_storage']);
-        $this->publicStorage = $storage->disk($this->config['public_storage']);
+        $this->storage = $filesStorage;
 
         return $this;
     }
@@ -51,7 +44,7 @@ class Safari extends AbstractProvider
      */
     public function send(Notification $notification, array $subscribers)
     {
-        $certificate = new Certificate($this->project, $this->localStorage);
+        $certificate = new Certificate($this->project, $this->storage);
         $stream  = new Streamer($certificate, $this->config['url']);
         $payload = new Payload($notification);
         $payload = json_encode($payload);
@@ -90,21 +83,22 @@ class Safari extends AbstractProvider
      */
     public function connectionPackage($extra = [])
     {
-        $certificate = new Certificate($this->project, $this->localStorage);
+        $certificate = new Certificate($this->project, $this->storage);
         $website = [
             'websiteName' => $this->project->name,
-            'websitePushID' => $this->provider->config['website_push_id'],
-            'allowedDomains' => [$this->project->base_url, "https://{$this->project->subdomain}.notimatica.io", 'https://dev.notimatica.io'],
-            'urlFormatString' => "https://{$this->project->subdomain}.notimatica.io/go/%@",
-            'authenticationToken' => Uuid::uuid4(),
-            'webServiceURL' => sprintf('https://api.notimatica.io/v1/projects/%s/safari', $this->project->uuid),
+            'websitePushID' => $this->config['website_push_id'],
+            'allowedDomains' => [$this->project->baseUrl],
+            'urlFormatString' => "{$this->project->baseUrl}/go/%@",
+            'webServiceURL' => $this->project->baseUrl . '/' . $this->config['subscribe_url'],
         ];
+
+        array_merge($website, $extra);
 
         $package = new Package(
             $website,
             $this->project,
             $certificate,
-            $this->publicStorage
+            $this->storage
         );
 
         return $package->generate();

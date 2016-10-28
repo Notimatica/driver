@@ -2,9 +2,6 @@
 
 namespace Notimatica\Driver\Tests;
 
-use Notimatica\Driver\Driver;
-use Notimatica\Driver\Project;
-
 class SendingTest extends TestCase
 {
     /**
@@ -12,9 +9,7 @@ class SendingTest extends TestCase
      */
     public function test_notification_send_to_chrome()
     {
-        $project = new Project('Test', $this->config);
-        $driver = new Driver($project);
-
+        $driver = $this->makeDriver();
         $notification = $this->makeNotification();
         $notification->shouldReceive('increment')->with('clicked', 1);
 

@@ -2,7 +2,8 @@
 
 namespace Notimatica\Driver;
 
-use Notimatica\Driver\Contracts\FilesStorage;
+use League\Flysystem\Adapter\Local;
+use League\Flysystem\Filesystem;
 use Notimatica\Driver\Providers\AbstractProvider;
 use Notimatica\Driver\Providers\Chrome;
 use Notimatica\Driver\Providers\Firefox;
@@ -14,21 +15,6 @@ class ProvidersFactory
      * @var \Closure[]
      */
     protected static $resolvers;
-
-    /**
-     * @var Project
-     */
-    protected $project;
-
-    /**
-     * Create a new ProvidersFactory.
-     *
-     * @param Project $project
-     */
-    public function __construct(Project $project)
-    {
-        $this->project = $project;
-    }
 
     /**
      * Extend resolver to support customers providers.
@@ -50,29 +36,27 @@ class ProvidersFactory
      */
     public function make($name, array $options = [])
     {
-        switch ($name) {
-            case Chrome::NAME:
-                $return = new Chrome($options);
-                break;
-            case Firefox::NAME:
-                $return = new Firefox($options);
-                break;
-            case Safari::NAME:
-                $return = new Safari($options);
-                break;
-            default:
-                $return = $this->resolveExtends($name, $options);
+        $provider = $this->resolveExtends($name, $options);
 
-                if (is_null($return)) {
+        if (is_null($provider)) {
+            switch ($name) {
+                case Chrome::NAME:
+                    $provider = new Chrome($options);
+                    break;
+                case Firefox::NAME:
+                    $provider = new Firefox($options);
+                    break;
+                case Safari::NAME:
+                    $storage  = new Filesystem(new Local($options['storage_root']));
+                    $provider = new Safari($options);
+                    $provider->setStorage($storage);
+                    break;
+                default:
                     throw new \RuntimeException("Unsupported provider '$name'");
-                }
+            }
         }
 
-        if (array_key_exists('storage_root', $options)) {
-            $return->setStorage(new FilesStorage($options['storage_root']));
-        }
-
-        return $return->setProject($this->project);
+        return $provider;
     }
 
     /**

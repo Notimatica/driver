@@ -18,17 +18,23 @@ class Project
      * @var AbstractProvider[]
      */
     public $providers = [];
+    /**
+     * @var string
+     */
+    public $baseUrl;
 
     /**
      * Create a new Project.
      *
      * @param string $name
+     * @param string $baseUrl
      * @param array $config
      */
-    public function __construct($name, array $config = [])
+    public function __construct($name, $baseUrl, array $config = [])
     {
         $this->name = $name;
         $this->config = $config;
+        $this->baseUrl = $baseUrl;
 
         $this->buildProviders();
     }
@@ -78,7 +84,7 @@ class Project
 
         if (! empty($this->config['providers']) && is_array($this->config['providers'])) {
             foreach ($this->config['providers'] as $name => $options) {
-                $this->providers[$name] = $providersFactory->make($name, $options);
+                $this->providers[$name] = $providersFactory->make($name, $options)->setProject($this);
             }
         }
     }

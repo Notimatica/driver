@@ -6,22 +6,18 @@ use Notimatica\Driver\Contracts\Notification;
 use Notimatica\Driver\Contracts\Subscriber;
 use Notimatica\Driver\Driver;
 use Notimatica\Driver\Project;
+use Notimatica\Driver\Providers\AbstractProvider;
 use Notimatica\Driver\Providers\Chrome;
 use Notimatica\Driver\Providers\Firefox;
 use Notimatica\Driver\Providers\Safari;
+use Notimatica\Driver\ProvidersFactory;
 use ReflectionClass;
 
 abstract class TestCase extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @var array
-     */
-    protected $config;
 
     protected function setUp()
     {
-        $this->config = require __DIR__ . '/../src/config/notimatica.php';
-
         parent::setUp();
     }
 
@@ -63,19 +59,54 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Returns config.
+     *
+     * @param  string $key
+     * @return array
+     */
+    protected function getConfig($key = null)
+    {
+        $config = require __DIR__ . '/../src/config/notimatica.php';
+
+        $config['providers'][Safari::NAME]['storage_root'] = __DIR__ . '/tmp/safari_push_data';
+
+        return ! is_null($key)
+            ? $config[$key]
+            : $config;
+    }
+
+    /**
+     * Make project.
+     *
      * @return Project
      */
     protected function makeProject()
     {
-        return new Project('Test Project', $this->config);
+        return new Project('Test Project', 'http://localhost', $this->getConfig());
     }
 
     /**
+     * Make driver.
+     *
      * @return Driver
      */
     protected function makeDriver()
     {
         return new Driver($this->makeProject());
+    }
+
+    /**
+     * Make provider.
+     *
+     * @param  string $provider
+     * @return AbstractProvider
+     */
+    protected function makeProvider($provider)
+    {
+        $config = $this->getConfig('providers');
+        $factory = new ProvidersFactory();
+
+        return $factory->make($provider, $config[$provider]);
     }
 
     /**

@@ -2,9 +2,8 @@
 
 namespace Notimatica\Driver\Apns;
 
-use App\Project;
-use Illuminate\Contracts\Filesystem\Filesystem;
-use Illuminate\Http\UploadedFile;
+use League\Flysystem\Filesystem;
+use Notimatica\Driver\Project;
 
 class Certificate
 {
@@ -12,19 +11,17 @@ class Certificate
      * @var Project
      */
     protected $project;
-
     /**
-     * @var \Illuminate\Contracts\Filesystem\Filesystem
+     * @var Filesystem
      */
     protected $storage;
-
     /**
      * @var array
      */
     protected $paths = [
-        'p12' => '%s/certificate.p12',
-        'pem' => '%s/certificate.pem',
-        'password' => '%s/certificate.password',
+        'p12' => '/certificate.p12',
+        'pem' => '/certificate.pem',
+        'password' => '/certificate.password',
     ];
 
     /**
@@ -40,21 +37,6 @@ class Certificate
     }
 
     /**
-     * Save p12 certificate.
-     *
-     * @param  string $certificate
-     * @return bool
-     */
-    public function saveP12Certificate($certificate)
-    {
-        if ($certificate instanceof UploadedFile) {
-            return move_uploaded_file_to_storage($certificate, $this->storage, $this->filePath('p12'));
-        }
-
-        return $this->storage->put($this->filePath('p12'), $certificate);
-    }
-
-    /**
      * Return certificate.
      *
      * @return string
@@ -62,21 +44,10 @@ class Certificate
     public function getP12Certificate()
     {
         try {
-            return $this->storage->get($this->filePath('p12'));
+            return $this->storage->get($this->paths['p12']);
         } catch (\Exception $e) {
-            return;
+            return '';
         }
-    }
-
-    /**
-     * Save password to certificate.
-     *
-     * @param  string $password
-     * @return bool
-     */
-    public function savePassword($password)
-    {
-        return $this->storage->put($this->filePath('password'), $password);
     }
 
     /**
@@ -87,40 +58,10 @@ class Certificate
     public function getPassword()
     {
         try {
-            return $this->storage->get($this->filePath('password'));
+            return $this->storage->get($this->paths['password']);
         } catch (\Exception $e) {
-            return;
+            return '';
         }
-    }
-
-    /**
-     * Convert p12 to pem.
-     *
-     * @return string
-     */
-    public function savePemCertificate()
-    {
-        $pem = '';
-
-        $password = $this->getPassword();
-
-        if (! openssl_pkcs12_read($this->getP12Certificate(), $certificate, $password)) {
-            dd(openssl_error_string());
-        }
-
-        if (isset($certificate['cert'])) {
-            openssl_x509_export($certificate['cert'], $cert);
-            $pem .= $cert;
-        }
-
-        if (isset($certificate['pkey'])) {
-            openssl_pkey_export($certificate['pkey'], $pkey, null);
-            $pem .= $pkey;
-        }
-
-        file_put_contents($this->storageFilePath('pem'), $pem);
-
-        return true;
     }
 
     /**
@@ -131,29 +72,22 @@ class Certificate
     public function getPemCertificate()
     {
         try {
-            return $this->storage->get($this->filePath('pem'));
+            return $this->storage->get($this->paths['pem']);
         } catch (\Exception $e) {
-            return;
+            return '';
         }
     }
 
     /**
-     * Make path to a file.
+     * Set certificates filenames.
      *
-     * @param  string $file
-     * @return string
+     * @param  array $paths
+     * @return $this
      */
-    public function storageFilePath($file)
+    public function setPaths(array $paths)
     {
-        return $this->storage->getAdapter()->applyPathPrefix($this->filePath($file));
-    }
+        $this->paths = $paths;
 
-    /**
-     * @param  string $file
-     * @return string
-     */
-    protected function filePath($file)
-    {
-        return sprintf($this->paths[$file], $this->project->uuid);
+        return $this;
     }
 }

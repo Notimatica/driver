@@ -2,8 +2,8 @@
 
 namespace Notimatica\Driver\Apns;
 
-use App\Project;
-use Illuminate\Contracts\Filesystem\Filesystem;
+use League\Flysystem\Filesystem;
+use Notimatica\Driver\Project;
 
 class Package
 {
@@ -72,9 +72,9 @@ class Package
      */
     public function generate()
     {
-        $packagePath = $this->storage->getAdapter()->applyPathPrefix($this->project->uuid . '/' . static::PACKAGE_FILENAME);
+        $packagePath = $this->storage->getAdapter()->applyPathPrefix(static::PACKAGE_FILENAME);
 
-        if ($this->storage->exists($this->project->uuid . '/' . static::PACKAGE_FILENAME)) {
+        if ($this->storage->exists(static::PACKAGE_FILENAME)) {
             return $packagePath;
         }
 
@@ -129,7 +129,7 @@ class Package
      */
     protected function addFile($name, $path)
     {
-        $path = $this->storage->getAdapter()->applyPathPrefix($this->project->uuid . '/' . $path);
+        $path = $this->storage->getAdapter()->applyPathPrefix($path);
         $this->manifest[$name] = sha1_file($path);
         $this->zip->addFile($path, $name);
     }

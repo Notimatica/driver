@@ -17,11 +17,12 @@ class ProvidersFactoryTest extends TestCase
      */
     public function it_can_make_default_providers()
     {
-        $factory = new ProvidersFactory($this->makeProject());
+        $config = $this->getConfig('providers');
+        $factory = new ProvidersFactory();
 
-        $this->assertInstanceOf(Chrome::class, $factory->make(Chrome::NAME));
-        $this->assertInstanceOf(Firefox::class, $factory->make(Firefox::NAME));
-        $this->assertInstanceOf(Safari::class, $factory->make(Safari::NAME));
+        $this->assertInstanceOf(Chrome::class, $factory->make(Chrome::NAME, $config[Chrome::NAME]));
+        $this->assertInstanceOf(Firefox::class, $factory->make(Firefox::NAME, $config[Firefox::NAME]));
+        $this->assertInstanceOf(Safari::class, $factory->make(Safari::NAME, $config[Safari::NAME]));
     }
 
     /**
@@ -29,12 +30,13 @@ class ProvidersFactoryTest extends TestCase
      */
     public function it_can_be_extended()
     {
-        $factory = new ProvidersFactory($this->makeProject());
+        $factory = new ProvidersFactory();
 
-        ProvidersFactory::extend('foo', function () {
-           return \Mockery::namedMock('FooProvider', AbstractProvider::class)->makePartial();
+        ProvidersFactory::extend('foo', function ($options) {
+            $this->assertArrayHasKey('foo', $options);
+            return \Mockery::namedMock('FooProvider', AbstractProvider::class)->makePartial();
         });
 
-        $this->assertInstanceOf('FooProvider', $factory->make('foo'));
+        $this->assertInstanceOf('FooProvider', $factory->make('foo', ['foo' => 'bar']));
     }
 }
