@@ -85,7 +85,7 @@ class Streamer
     protected function createStreamContext()
     {
         $streamContext = stream_context_create();
-        stream_context_set_option($streamContext, 'ssl', 'local_cert', $this->certificate->storageFilePath('pem'));
+        stream_context_set_option($streamContext, 'ssl', 'local_cert', $this->certificate->getPemCertificatePath());
 
         return $streamContext;
     }

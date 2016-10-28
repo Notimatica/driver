@@ -64,14 +64,16 @@ class Safari extends AbstractProvider
     /**
      * Send request.
      *
-     * @param  array $subscribers
+     * @param  Subscriber[] $subscribers
      * @param  mixed $payload
      * @return \Generator
      */
     protected function prepareRequests($subscribers, $payload = null)
     {
         foreach ($subscribers as $subscriber) {
-            yield chr(0) . chr(0) . chr(32) . pack('H*', $subscriber->token) . chr(0) . chr(strlen($payload)) . $payload;
+            try {
+                yield chr(0) . chr(0) . chr(32) . pack('H*', $subscriber->getToken()) . chr(0) . chr(strlen($payload)) . $payload;
+            } catch (\Exception $e) {}
         }
     }
 

@@ -79,6 +79,16 @@ class Certificate
     }
 
     /**
+     * Return pem certificate path.
+     *
+     * @return string
+     */
+    public function getPemCertificatePath()
+    {
+        return $this->storage->getAdapter()->applyPathPrefix($this->paths['pem']);
+    }
+
+    /**
      * Set certificates filenames.
      *
      * @param  array $paths

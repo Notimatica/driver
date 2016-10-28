@@ -197,7 +197,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
      * @param string $token
      * @return \Mockery\MockInterface|Subscriber
      */
-    protected function makeSafariSubscriber($uuid = 'a060f737-a83a-465a-bcc9-26e5c4a2cea4', $token = '111122223333qqqwweee')
+    protected function makeSafariSubscriber($uuid = 'a060f737-a83a-465a-bcc9-26e5c4a2cea4', $token = '111122223333444aaabbb')
     {
         $subscriber = \Mockery::mock(Subscriber::class);
         $subscriber->shouldReceive('getUuid')->andReturn($uuid);
