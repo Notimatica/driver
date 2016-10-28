@@ -2,6 +2,7 @@
 
 namespace Notimatica\Driver;
 
+use Notimatica\Driver\Contracts\FilesStorage;
 use Notimatica\Driver\Providers\AbstractProvider;
 use Notimatica\Driver\Providers\Chrome;
 use Notimatica\Driver\Providers\Firefox;
@@ -67,6 +68,10 @@ class ProvidersFactory
                 }
         }
 
+        if (array_key_exists('storage_root', $options)) {
+            $return->setStorage(new FilesStorage($options['storage_root']));
+        }
+
         return $return->setProject($this->project);
     }
 
@@ -79,9 +84,7 @@ class ProvidersFactory
      */
     protected function resolveExtends($name, array $options)
     {
-        if (empty(static::$resolvers[$name])) {
-            return;
-        }
+        if (empty(static::$resolvers[$name])) return;
 
         return call_user_func(static::$resolvers[$name], $options);
     }

@@ -33,7 +33,7 @@ class Driver
      *
      * @param Project $project
      */
-    public function __construct(Project $project)
+    public function __construct(Project $project = null)
     {
         $this->project = $project;
 
@@ -152,6 +152,10 @@ class Driver
      */
     protected function validate()
     {
+        if (is_null($this->project)) {
+            throw new \RuntimeException("Project wasn't set.");
+        }
+
         if (is_null($this->notification)) {
             throw new \RuntimeException("Notification wasn't set.");
         }
@@ -159,5 +163,28 @@ class Driver
         if (is_null($this->subscribers)) {
             throw new \RuntimeException("No subscribers set.");
         }
+    }
+
+    /**
+     * Set project manually.
+     *
+     * @param  Project $project
+     * @return $this
+     */
+    public function setProject(Project $project)
+    {
+        $this->project = $project;
+
+        return $this;
+    }
+
+    /**
+     * Get project instance.
+     *
+     * @return Project
+     */
+    public function getProject()
+    {
+        return $this->project;
     }
 }

@@ -161,21 +161,6 @@ class Chrome extends AbstractProvider
     }
 
     /**
-     * Distribute connection package.
-     *
-     * @param array $extra
-     * @throws \ZipStream\Exception\FileNotFoundException
-     * @throws \ZipStream\Exception\FileNotReadableException
-     */
-    public function connectionPackage($extra = [])
-    {
-        $zip = new ZipStream('notimatica.zip');
-        $zip->addFileFromPath('notimatica-sw.js', public_path('notimatica-sw.js'));
-        $zip->addFile('manifest.json', $this->manifest());
-        $zip->finish();
-    }
-
-    /**
      * Generate manifest file text.
      *
      * @return string

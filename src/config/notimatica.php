@@ -3,6 +3,7 @@
 return [
     'providers' => [
         \Notimatica\Driver\Providers\Chrome::NAME => [
+            'storage_root' => '/',
             'api_key' => '',
             'sender_id' => '',
             'ttl' => 86400,
@@ -11,13 +12,15 @@ return [
             'concurrent_requests' => 10,
         ],
         \Notimatica\Driver\Providers\Firefox::NAME => [
+            'storage_root' => '/',
             'ttl' => 86400,
             'url' => 'https://updates.push.services.mozilla.com/push/v1',
             'concurrent_requests' => 100,
         ],
         \Notimatica\Driver\Providers\Safari::NAME => [
+            'storage_root' => '/safari',
             'safari_web_id' => '',
-            'package_path' => '',
+            'package_path' => null,
             'url' => 'ssl://gateway.push.apple.com:2195',
         ],
     ],
