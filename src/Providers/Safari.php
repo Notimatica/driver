@@ -74,6 +74,7 @@ class Safari extends AbstractProvider
             try {
                 yield chr(0) . chr(0) . chr(32) . pack('H*', $subscriber->getToken()) . chr(0) . chr(strlen($payload)) . $payload;
             } catch (\Exception $e) {
+                // Skip catch, because we don't need to handle if subscriber has an invalid token.
             }
         }
     }
