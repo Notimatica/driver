@@ -29,6 +29,6 @@ return [
         'subscriber_lifetime' => 86400,
     ],
     'statistics' => [
-        'storage' => 'model',
+        'storage' => \Notimatica\Driver\StatisticsStorages\Model::NAME,
     ],
 ];

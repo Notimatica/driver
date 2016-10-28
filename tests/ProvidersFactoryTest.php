@@ -2,27 +2,21 @@
 
 namespace Notimatica\Driver\Tests;
 
-use Notimatica\Driver\Contracts\Notification;
-use Notimatica\Driver\Contracts\Subscriber;
-use Notimatica\Driver\Providers\AbstractProvider;
-use Notimatica\Driver\Providers\Chrome;
-use Notimatica\Driver\Providers\Firefox;
-use Notimatica\Driver\Providers\Safari;
 use Notimatica\Driver\ProvidersFactory;
+use Notimatica\Driver\StatisticsStorages\AbstractStorage;
+use Notimatica\Driver\StatisticsStorages\Model;
+use Notimatica\Driver\StatisticsStoragesFactory;
 
-class ProvidersFactoryTest extends TestCase
+class StatisticsStoragFactoryTest extends TestCase
 {
     /**
      * @test
      */
-    public function it_can_make_default_providers()
+    public function it_can_make_default_storage()
     {
-        $config = $this->getConfig('providers');
-        $factory = new ProvidersFactory();
+        $factory = new StatisticsStoragesFactory();
 
-        $this->assertInstanceOf(Chrome::class, $factory->make(Chrome::NAME, $config[Chrome::NAME]));
-        $this->assertInstanceOf(Firefox::class, $factory->make(Firefox::NAME, $config[Firefox::NAME]));
-        $this->assertInstanceOf(Safari::class, $factory->make(Safari::NAME, $config[Safari::NAME]));
+        $this->assertInstanceOf(Model::class, $factory->make(Model::NAME));
     }
 
     /**
@@ -30,10 +24,10 @@ class ProvidersFactoryTest extends TestCase
      */
     public function it_will_throw_unsupported_provider_exception()
     {
-        $factory = new ProvidersFactory();
+        $factory = new StatisticsStoragesFactory();
 
-        $this->setExpectedException(\RuntimeException::class, "Unsupported provider '111'");
-        $factory->make('111', []);
+        $this->setExpectedException(\RuntimeException::class, "Unsupported statistics storage '111'");
+        $factory->make('111');
     }
 
     /**
@@ -41,13 +35,12 @@ class ProvidersFactoryTest extends TestCase
      */
     public function it_can_be_extended()
     {
-        $factory = new ProvidersFactory();
+        $factory = new StatisticsStoragesFactory();
 
-        ProvidersFactory::extend('foo', function ($options) {
-            $this->assertArrayHasKey('foo', $options);
-            return \Mockery::namedMock('FooProvider', AbstractProvider::class)->makePartial();
+        StatisticsStoragesFactory::extend('foo', function () {
+            return \Mockery::namedMock('FooStorage', AbstractStorage::class)->makePartial();
         });
 
-        $this->assertInstanceOf('FooProvider', $factory->make('foo', ['foo' => 'bar']));
+        $this->assertInstanceOf('FooStorage', $factory->make('foo'));
     }
 }

@@ -35,7 +35,7 @@ class SendingTest extends TestCase
     /**
      * @test
      */
-    public function test_notification_send_to_Safari()
+    public function test_notification_send_to_safari()
     {
         $driver = $this->makeDriver();
         $notification = $this->makeNotification();
