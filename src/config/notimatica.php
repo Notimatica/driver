@@ -3,6 +3,8 @@
 return [
     'providers' => [
         \Notimatica\Driver\Providers\Chrome::NAME => [
+            'api_key' => '',
+            'sender_id' => '',
             'ttl' => 86400,
             'batch_chunk_size' => 1000,
             'url' => 'https://android.googleapis.com/gcm/send',
@@ -14,8 +16,9 @@ return [
             'concurrent_requests' => 100,
         ],
         \Notimatica\Driver\Providers\Safari::NAME => [
+            'safari_web_id' => '',
+            'package_path' => '',
             'url' => 'ssl://gateway.push.apple.com:2195',
-            'package_path' => '/',
         ],
     ],
     'payload' => [
