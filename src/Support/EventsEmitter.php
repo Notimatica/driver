@@ -25,14 +25,24 @@ trait EventsEmitter
     }
 
     /**
+     * Boot event listeners.
+     */
+    protected function bootListeners()
+    {
+        $storage = $this->project->config['statistics']['storage'];
+        $statisticsStorage = (new StatisticsStoragesFactory())->make($storage);
+
+        return static::$events->useListenerProvider($statisticsStorage);
+    }
+
+    /**
      * Emit event.
      *
-     * @param  string|EventInterface $event
      * @return \League\Event\EventInterface|string
      */
-    public static function emitEvent($event)
+    public static function emit()
     {
-        return static::$events->emit($event);
+        return call_user_func_array([static::$events, 'emit'], func_get_args());
     }
 
     /**
@@ -42,19 +52,18 @@ trait EventsEmitter
      * @param  ListenerInterface|callable $listener
      * @return EventInterface|string
      */
-    public static function listenToEvent($event, $listener)
+    public static function on($event, $listener)
     {
         return static::$events->addListener($event, $listener);
     }
 
     /**
-     * Boot event listeners.
+     * Remove listeners.
+     *
+     * @param $event
      */
-    protected function bootListeners()
+    public static function off($event)
     {
-        $storage = $this->project->config['statistics']['storage'];
-        $statisticsStorage = (new StatisticsStoragesFactory())->make($storage);
-
-        return static::$events->useListenerProvider($statisticsStorage);
+        static::$events->removeAllListeners($event);
     }
 }

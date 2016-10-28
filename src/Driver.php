@@ -87,7 +87,7 @@ class Driver
             try {
                 $this->provider($provider)->send($this->notification, $subscribers);
             } catch (\RuntimeException $e) {
-                static::emitEvent('flush.exception', $e);
+                static::emit('flush.exception', $e);
             }
         }
     }

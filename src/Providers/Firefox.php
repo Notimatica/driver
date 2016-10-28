@@ -78,13 +78,13 @@ class Firefox extends AbstractProvider
                         throw new \Exception($response->message);
                     }
 
-                    Driver::emitEvent(new NotificationSent($notification));
+                    Driver::emit(new NotificationSent($notification));
                 } catch (\Exception $e) {
-                    Driver::emitEvent(new NotificationFailed($notification));
+                    Driver::emit(new NotificationFailed($notification));
                 }
             },
             function ($reason, $index) use ($notification) {
-                Driver::emitEvent(new NotificationFailed($notification));
+                Driver::emit(new NotificationFailed($notification));
             }
         );
     }

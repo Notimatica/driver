@@ -1,7 +1,9 @@
 <?php namespace Notimatica\Driver\Tests;
 
 use League\Event\Emitter;
+use League\Event\Event;
 use Notimatica\Driver\Contracts\Subscriber;
+use Notimatica\Driver\Driver;
 use Notimatica\Driver\Project;
 use Notimatica\Driver\Providers\AbstractProvider;
 use Notimatica\Driver\ProvidersFactory;
@@ -16,6 +18,20 @@ class DriverTest extends TestCase
         $driver = $this->makeDriver();
 
         $this->assertInstanceOf(Emitter::class, $driver::$events);
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_listen_events()
+    {
+        Driver::on('foo-event', function(Event $event, $var) {
+            $this->assertEquals('bar', $var);
+        });
+
+        Driver::emit('foo-event', 'bar');
+
+        Driver::off('foo-event');
     }
 
     /**

@@ -20,6 +20,7 @@ class FirefoxTest extends TestCase
         $this->assertInstanceOf(\Generator::class, $generator);
         $this->assertCount(3, $requests);
         $this->assertInstanceOf(Request::class, $requests[0]);
+        $this->assertInstanceOf(Request::class, $requests[0]);
         $this->assertInstanceOf(Request::class, $requests[1]);
         $this->assertInstanceOf(Request::class, $requests[2]);
     }

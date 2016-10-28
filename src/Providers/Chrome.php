@@ -76,18 +76,18 @@ class Chrome extends AbstractProvider
                     }
 
                     if ($response->success > 0) {
-                        Driver::emitEvent(new NotificationSent($notification, (int) $response->success));
+                        Driver::emit(new NotificationSent($notification, (int) $response->success));
                     }
 
                     if ($response->failure > 0) {
-                        Driver::emitEvent(new NotificationFailed($notification, (int) $response->failure));
+                        Driver::emit(new NotificationFailed($notification, (int) $response->failure));
                     }
                 } catch (\Exception $e) {
-                    Driver::emitEvent(new NotificationFailed($notification, $this->calculateChunkSize($index, $total)));
+                    Driver::emit(new NotificationFailed($notification, $this->calculateChunkSize($index, $total)));
                 }
             },
             function ($reason, $index) use ($notification, $total) {
-                Driver::emitEvent(new NotificationFailed($notification, $this->calculateChunkSize($index, $total)));
+                Driver::emit(new NotificationFailed($notification, $this->calculateChunkSize($index, $total)));
             }
         );
     }
