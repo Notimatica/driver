@@ -33,7 +33,7 @@ class Driver
      *
      * @param Project $project
      */
-    public function __construct(Project $project = null)
+    public function __construct(Project $project)
     {
         $this->project = $project;
 
@@ -110,7 +110,7 @@ class Driver
      * @return AbstractProvider
      * @throws \RuntimeException
      */
-    protected function provider($name)
+    public function provider($name)
     {
         return $this->project->getProvider($name);
     }
@@ -152,10 +152,6 @@ class Driver
      */
     protected function validate()
     {
-        if (is_null($this->project)) {
-            throw new \RuntimeException("Project wasn't set.");
-        }
-
         if (is_null($this->notification)) {
             throw new \RuntimeException("Notification wasn't set.");
         }

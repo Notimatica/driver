@@ -54,6 +54,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         $class    = new ReflectionClass($class);
         $property = $class->getProperty($name);
         $property->setAccessible(true);
+
         return $property;
     }
     /**
@@ -72,6 +73,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         $class  = new ReflectionClass($class);
         $method = $class->getMethod($name);
         $method->setAccessible(true);
+
         return $method;
     }
 
@@ -85,10 +87,10 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     {
         if (is_null($key)) return $this->config;
 
-        $config = &$this->config;
+        $config = $this->config;
         foreach(explode('.', $key) as $step)
         {
-            $config = &$config[$step];
+            $config = $config[$step];
         }
 
         return $config;
@@ -161,40 +163,46 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @param string $uuid
+     * @param string $token
      * @return \Mockery\MockInterface|Subscriber
      */
-    protected function makeChromeSubscriber()
+    protected function makeChromeSubscriber($uuid = 'a060f737-a83a-465a-bcc9-26e5c4a2cea4', $token = '111122223333qqqwweee')
     {
         $subscriber = \Mockery::mock(Subscriber::class);
-        $subscriber->shouldReceive('getUuid')->andReturn('a060f737-a83a-465a-bcc9-26e5c4a2cea4');
+        $subscriber->shouldReceive('getUuid')->andReturn($uuid);
         $subscriber->shouldReceive('getProvider')->andReturn(Chrome::NAME);
-        $subscriber->shouldReceive('getToken')->andReturn('111122223333qqqwweee');
+        $subscriber->shouldReceive('getToken')->andReturn($token);
 
         return $subscriber;
     }
 
     /**
+     * @param string $uuid
+     * @param string $token
      * @return \Mockery\MockInterface|Subscriber
      */
-    protected function makeFirefoxSubscriber()
+    protected function makeFirefoxSubscriber($uuid = 'a060f737-a83a-465a-bcc9-26e5c4a2cea4', $token = '111122223333qqqwweee')
     {
         $subscriber = \Mockery::mock(Subscriber::class);
-        $subscriber->shouldReceive('getUuid')->andReturn('4efcb6c1-6b0e-465d-bb2a-a1a579b92919');
+        $subscriber->shouldReceive('getUuid')->andReturn($uuid);
         $subscriber->shouldReceive('getProvider')->andReturn(Firefox::NAME);
-        $subscriber->shouldReceive('getToken')->andReturn('111122223333qqqwweee');
+        $subscriber->shouldReceive('getToken')->andReturn($token);
 
         return $subscriber;
     }
 
     /**
+     * @param string $uuid
+     * @param string $token
      * @return \Mockery\MockInterface|Subscriber
      */
-    protected function makeSafariSubscriber()
+    protected function makeSafariSubscriber($uuid = 'a060f737-a83a-465a-bcc9-26e5c4a2cea4', $token = '111122223333qqqwweee')
     {
         $subscriber = \Mockery::mock(Subscriber::class);
-        $subscriber->shouldReceive('getUuid')->andReturn('b253c0f9-1a71-4349-942d-61569224278b');
+        $subscriber->shouldReceive('getUuid')->andReturn($uuid);
         $subscriber->shouldReceive('getProvider')->andReturn(Safari::NAME);
-        $subscriber->shouldReceive('getToken')->andReturn('111122223333qqqwweee');
+        $subscriber->shouldReceive('getToken')->andReturn($token);
 
         return $subscriber;
     }

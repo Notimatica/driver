@@ -10,7 +10,6 @@ use Notimatica\Driver\Contracts\Subscriber;
 use Notimatica\Driver\Driver;
 use Notimatica\Driver\Events\NotificationFailed;
 use Notimatica\Driver\Events\NotificationSent;
-use ZipStream\ZipStream;
 
 class Chrome extends AbstractProvider
 {
@@ -84,13 +83,11 @@ class Chrome extends AbstractProvider
                         Driver::emitEvent(new NotificationFailed($notification, (int) $response->failure));
                     }
                 } catch (\Exception $e) {
-                    Driver::emitEvent(new NotificationFailed($notification, $this->calculateChunkSize($index,
-                        $total)));
+                    Driver::emitEvent(new NotificationFailed($notification, $this->calculateChunkSize($index, $total)));
                 }
             },
             function ($reason, $index) use ($notification, $total) {
-                Driver::emitEvent(new NotificationFailed($notification, $this->calculateChunkSize($index,
-                    $total)));
+                Driver::emitEvent(new NotificationFailed($notification, $this->calculateChunkSize($index, $total)));
             }
         );
     }
@@ -108,7 +105,7 @@ class Chrome extends AbstractProvider
         $headers = static::$headers;
 
         foreach ($this->batch($subscribers) as $index => $chunk) {
-            $content = $this->getContent($chunk);
+            $content = $this->getRequestContent($chunk);
             $headers['Content-Length'] = strlen($content);
 
             yield new Request('POST', $url, $headers, $content);
@@ -147,7 +144,7 @@ class Chrome extends AbstractProvider
      * @param  Subscriber[] $subscribers
      * @return array
      */
-    public function getContent(array $subscribers)
+    protected function getRequestContent(array $subscribers)
     {
         $tokens = [];
 

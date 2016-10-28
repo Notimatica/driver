@@ -28,6 +28,17 @@ class ProvidersFactoryTest extends TestCase
     /**
      * @test
      */
+    public function it_will_throw_unsupported_provider_exception()
+    {
+        $factory = new ProvidersFactory();
+
+        $this->setExpectedException(\RuntimeException::class, "Unsupported provider '111'");
+        $factory->make('111', []);
+    }
+
+    /**
+     * @test
+     */
     public function it_can_be_extended()
     {
         $factory = new ProvidersFactory();
