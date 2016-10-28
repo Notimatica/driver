@@ -19,9 +19,9 @@ class Certificate
      * @var array
      */
     protected $paths = [
-        'p12' => '/certificate.p12',
-        'pem' => '/certificate.pem',
-        'password' => '/certificate.password',
+        'p12' => 'certificate.p12',
+        'pem' => 'certificate.pem',
+        'password' => 'certificate.password',
     ];
 
     /**
