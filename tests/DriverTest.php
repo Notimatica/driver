@@ -1,4 +1,6 @@
-<?php namespace Notimatica\Driver\Tests;
+<?php
+
+namespace Notimatica\Driver\Tests;
 
 use League\Event\Emitter;
 use League\Event\Event;
@@ -25,7 +27,7 @@ class DriverTest extends TestCase
      */
     public function it_can_listen_events()
     {
-        Driver::on('foo-event', function(Event $event, $var) {
+        Driver::on('foo-event', function (Event $event, $var) {
             $this->assertEquals('bar', $var);
         });
 
@@ -48,7 +50,7 @@ class DriverTest extends TestCase
 
         $driver->to([
             $this->makeChromeSubscriber(),
-            $unknownProviderSubscriber
+            $unknownProviderSubscriber,
         ]);
 
         $splitSubscribers = $this->getPublicMethod('splitSubscribers', $driver);
@@ -62,7 +64,7 @@ class DriverTest extends TestCase
     public function it_validates_subscribers_input()
     {
         $driver = $this->makeDriver();
-        $this->setExpectedException(\RuntimeException::class, "No subscribers set.");
+        $this->setExpectedException(\RuntimeException::class, 'No subscribers set.');
         $driver->send($this->makeNotification())->flush();
     }
 

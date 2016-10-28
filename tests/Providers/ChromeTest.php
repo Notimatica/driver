@@ -1,4 +1,6 @@
-<?php namespace Notimatica\Driver\Tests\Providers;
+<?php
+
+namespace Notimatica\Driver\Tests\Providers;
 
 use GuzzleHttp\Psr7\Request;
 use Notimatica\Driver\Providers\Chrome;
@@ -36,7 +38,7 @@ class ChromeTest extends TestCase
         $this->assertJson($manifest);
         $this->assertJsonStringEqualsJsonString($manifest, json_encode([
             'name' => $this->makeProject()->name,
-            'gcm_sender_id' => '111222333'
+            'gcm_sender_id' => '111222333',
         ]));
     }
 
@@ -55,7 +57,7 @@ class ChromeTest extends TestCase
                 '123123',
                 'qweqwe',
                 'asdasd',
-            ]
+            ],
         ]));
     }
 

@@ -73,7 +73,8 @@ class Safari extends AbstractProvider
         foreach ($subscribers as $subscriber) {
             try {
                 yield chr(0) . chr(0) . chr(32) . pack('H*', $subscriber->getToken()) . chr(0) . chr(strlen($payload)) . $payload;
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+            }
         }
     }
 

@@ -10,7 +10,6 @@ use Notimatica\Driver\Contracts\Subscriber;
 use Notimatica\Driver\Driver;
 use Notimatica\Driver\Events\NotificationFailed;
 use Notimatica\Driver\Events\NotificationSent;
-use ZipStream\ZipStream;
 
 class Firefox extends AbstractProvider
 {

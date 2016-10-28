@@ -43,6 +43,7 @@ class ProvidersFactoryTest extends TestCase
 
         ProvidersFactory::extend('foo', function ($options) {
             $this->assertArrayHasKey('foo', $options);
+
             return \Mockery::namedMock('FooProvider', AbstractProvider::class)->makePartial();
         });
 

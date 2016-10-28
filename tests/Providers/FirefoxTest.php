@@ -1,4 +1,6 @@
-<?php namespace Notimatica\Driver\Tests\Providers;
+<?php
+
+namespace Notimatica\Driver\Tests\Providers;
 
 use GuzzleHttp\Psr7\Request;
 use Notimatica\Driver\Providers\Firefox;

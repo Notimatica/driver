@@ -68,7 +68,9 @@ class ProvidersFactory
      */
     protected function resolveExtends($name, array $options)
     {
-        if (empty(static::$resolvers[$name])) return;
+        if (empty(static::$resolvers[$name])) {
+            return;
+        }
 
         return call_user_func(static::$resolvers[$name], $options);
     }

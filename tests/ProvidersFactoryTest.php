@@ -2,7 +2,6 @@
 
 namespace Notimatica\Driver\Tests;
 
-use Notimatica\Driver\ProvidersFactory;
 use Notimatica\Driver\StatisticsStorages\AbstractStorage;
 use Notimatica\Driver\StatisticsStorages\Model;
 use Notimatica\Driver\StatisticsStoragesFactory;

@@ -85,11 +85,12 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
      */
     protected function getConfig($key = null)
     {
-        if (is_null($key)) return $this->config;
+        if (is_null($key)) {
+            return $this->config;
+        }
 
         $config = $this->config;
-        foreach(explode('.', $key) as $step)
-        {
+        foreach (explode('.', $key) as $step) {
             $config = $config[$step];
         }
 
@@ -106,8 +107,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     protected function setConfig($key, $value)
     {
         $config = &$this->config;
-        foreach(explode('.', $key) as $step)
-        {
+        foreach (explode('.', $key) as $step) {
             $config = &$config[$step];
         }
 

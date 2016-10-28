@@ -157,7 +157,7 @@ class Driver
         }
 
         if (is_null($this->subscribers)) {
-            throw new \RuntimeException("No subscribers set.");
+            throw new \RuntimeException('No subscribers set.');
         }
     }
 
