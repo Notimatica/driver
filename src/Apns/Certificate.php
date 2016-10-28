@@ -8,10 +8,6 @@ use Notimatica\Driver\Project;
 class Certificate
 {
     /**
-     * @var Project
-     */
-    protected $project;
-    /**
      * @var Filesystem
      */
     protected $storage;
@@ -27,12 +23,11 @@ class Certificate
     /**
      * Create a new Certificate.
      *
-     * @param Project $project
      * @param Filesystem $storage
+     * @internal param Project $project
      */
-    public function __construct(Project $project, Filesystem $storage)
+    public function __construct(Filesystem $storage)
     {
-        $this->project = $project;
         $this->storage = $storage;
     }
 

@@ -44,7 +44,7 @@ class Safari extends AbstractProvider
      */
     public function send(Notification $notification, array $subscribers)
     {
-        $certificate = new Certificate($this->project, $this->storage);
+        $certificate = new Certificate($this->storage);
         $stream  = new Streamer($certificate, $this->config['url']);
         $payload = new Payload($notification);
         $payload = json_encode($payload);
@@ -87,7 +87,7 @@ class Safari extends AbstractProvider
      */
     public function connectionPackage($extra = [])
     {
-        $certificate = new Certificate($this->project, $this->storage);
+        $certificate = new Certificate($this->storage);
         $website = [
             'websiteName' => $this->project->name,
             'websitePushID' => $this->config['website_push_id'],
