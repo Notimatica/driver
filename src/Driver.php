@@ -103,17 +103,6 @@ class Driver
     }
 
     /**
-     * Generate connection package.
-     *
-     * @param string $provider
-     * @param array $extra
-     */
-    public function sendPackage($provider, $extra = [])
-    {
-        return $this->provider($provider)->connectionPackage($extra);
-    }
-
-    /**
      * Cast provider.
      *
      * @param  string $name

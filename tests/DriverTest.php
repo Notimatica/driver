@@ -89,21 +89,4 @@ class DriverTest extends TestCase
         $driver->setProject(\Mockery::namedMock('FooProject', Project::class)->makePartial());
         $this->assertInstanceOf('FooProject', $driver->getProject());
     }
-
-    /**
-     * @test
-     */
-    public function it_can_send_connection_package()
-    {
-        $this->setConfig('providers.foo', []);
-
-        ProvidersFactory::extend('foo', function ($options) {
-            $provider = \Mockery::namedMock('FooProvider', AbstractProvider::class)->makePartial();
-            $provider->shouldReceive('connectionPackage')->once()->andReturn(true);
-
-            return $provider;
-        });
-
-        $this->assertTrue($this->makeDriver()->sendPackage('foo'));
-    }
 }
