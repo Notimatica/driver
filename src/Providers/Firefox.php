@@ -65,7 +65,7 @@ class Firefox extends AbstractProvider
 
         $this->flush(
             $subscribers,
-            function (Response $response, $index) use ($notification) {
+            function (Response $response) use ($notification) {
                 try {
                     if ($response->getStatusCode() != 201) {
                         $response = json_decode($response->getBody());
@@ -82,7 +82,7 @@ class Firefox extends AbstractProvider
                     Driver::emit(new NotificationFailed($notification));
                 }
             },
-            function ($reason, $index) use ($notification) {
+            function () use ($notification) {
                 Driver::emit(new NotificationFailed($notification));
             }
         );
