@@ -32,7 +32,7 @@ trait EventsEmitter
     {
         $statisticsStorage = $this->makeStatisticsStorage();
 
-        if (!is_null($statisticsStorage)) {
+        if (! is_null($statisticsStorage)) {
             static::$events->useListenerProvider($statisticsStorage);
         }
     }
@@ -76,11 +76,10 @@ trait EventsEmitter
      */
     protected function makeStatisticsStorage()
     {
-        if (!empty($this->project->config['statistics']['storage'])
-            || class_exists($this->project->config['statistics']['storage'])) {
+        if (! empty($this->project->config['statistics']['storage'])) {
             $storage = $this->project->config['statistics']['storage'];
 
-            return new $storage;
+            if (class_exists($storage)) return new $storage;
         }
 
         return null;
