@@ -32,12 +32,11 @@ interface NotificationRepository
     public function make($title, $body, $url = '');
 
     /**
-     * Make notification.
+     * Increment notification statistics.
      *
      * @param  Notification $notification
      * @param  string $column
      * @param  integer $value
-     * @return Notification
      */
     public function increment(Notification $notification, $column, $value);
 }
