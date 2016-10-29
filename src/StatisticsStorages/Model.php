@@ -9,8 +9,6 @@ use Notimatica\Driver\Events\NotificationSent;
 
 class Model extends AbstractStorage
 {
-    const NAME = 'model';
-
     /**
      * Number of sent pushes.
      *

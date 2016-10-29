@@ -24,6 +24,6 @@ return [
         ],
     ],
     'statistics' => [
-        'storage' => \Notimatica\Driver\StatisticsStorages\Model::NAME,
+        'storage' => \Notimatica\Driver\StatisticsStorages\Model::class,
     ],
 ];

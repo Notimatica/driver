@@ -11,10 +11,8 @@ class ModelTest extends TestCase
     /**
      * @test
      */
-    public function it_can_be_made()
+    public function it_can_be_created()
     {
-        $factory = new StatisticsStoragesFactory();
-
-        $this->assertInstanceOf(Model::class, $factory->make(Model::NAME));
+        $this->assertInstanceOf(Model::class, new Model());
     }
 }

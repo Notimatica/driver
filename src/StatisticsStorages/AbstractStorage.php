@@ -11,8 +11,6 @@ use Notimatica\Driver\Events\NotificationSent;
 
 abstract class AbstractStorage implements ListenerProviderInterface
 {
-    const NAME = null;
-
     /**
      * Number of sent pushes.
      *
