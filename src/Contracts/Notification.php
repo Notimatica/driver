@@ -7,7 +7,7 @@ interface Notification
     /**
      * Returns unique notification's id.
      *
-     * @return integer|string
+     * @return int|string
      */
     public function getId();
 

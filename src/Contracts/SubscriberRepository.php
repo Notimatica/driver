@@ -14,6 +14,14 @@ interface SubscriberRepository
     public function all($limit = 0, $offset = 0);
 
     /**
+     * Find subscriber by id.
+     *
+     * @param  int|string $id
+     * @return Subscriber|null
+     */
+    public function find($id);
+
+    /**
      * Subscribe to notifications.
      *
      * @param  string $provider

@@ -7,7 +7,7 @@ interface Subscriber
     /**
      * Returns unique subscriber's id.
      *
-     * @return integer|string
+     * @return int|string
      */
     public function getId();
 

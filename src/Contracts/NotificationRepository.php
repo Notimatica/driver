@@ -14,6 +14,14 @@ interface NotificationRepository
     public function all($limit = 0, $offset = 0);
 
     /**
+     * Find notification by id.
+     *
+     * @param  int|string $id
+     * @return Notification|null
+     */
+    public function find($id);
+
+    /**
      * Make notification.
      *
      * @param  string $title
