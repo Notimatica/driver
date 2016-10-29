@@ -3,6 +3,7 @@
 namespace Notimatica\Driver;
 
 use Notimatica\Driver\Contracts\Notification;
+use Notimatica\Driver\Contracts\PayloadStorage as PayloadStorageContract;
 use Notimatica\Driver\Contracts\Subscriber;
 use Notimatica\Driver\Providers\AbstractProvider;
 use Notimatica\Driver\Support\EventsEmitter;
@@ -24,18 +25,26 @@ class Driver
      */
     protected $subscribers;
     /**
-     * @var PayloadStorage
+     * @var PayloadStorageContract
      */
     protected $payloadStorage;
+    /**
+     * @var Statistics
+     */
+    protected $statisticsStorage;
 
     /**
      * Create a new Driver.
      *
      * @param Project $project
+     * @param PayloadStorageContract $payloadStorage
+     * @param Statistics $statisticsStorage
      */
-    public function __construct(Project $project)
+    public function __construct(Project $project, PayloadStorageContract $payloadStorage = null, Statistics $statisticsStorage = null)
     {
         $this->project = $project;
+        $this->payloadStorage = $payloadStorage;
+        $this->statisticsStorage = $statisticsStorage;
 
         $this->boot();
     }
@@ -138,7 +147,11 @@ class Driver
             $partials[$provider][] = $subscriber;
 
             if ($this->payloadStorage) {
-                $this->payloadStorage->assignNotificationToSubscriber($subscriber, $this->notification);
+                $this->payloadStorage->assignNotificationToSubscriber(
+                    $subscriber,
+                    $this->notification,
+                    $this->project->config['payload']['subscriber_lifetime']
+                );
             }
         }
 
@@ -182,5 +195,15 @@ class Driver
     public function getProject()
     {
         return $this->project;
+    }
+
+    /**
+     * Boot event listeners.
+     */
+    protected function bootListeners()
+    {
+        if (! is_null($this->statisticsStorage)) {
+            static::$events->useListenerProvider($this->statisticsStorage);
+        }
     }
 }

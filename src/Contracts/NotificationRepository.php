@@ -30,4 +30,14 @@ interface NotificationRepository
      * @return Notification
      */
     public function make($title, $body, $url = '');
+
+    /**
+     * Make notification.
+     *
+     * @param  Notification $notification
+     * @param  string $column
+     * @param  integer $value
+     * @return Notification
+     */
+    public function increment(Notification $notification, $column, $value);
 }

@@ -7,17 +7,17 @@ interface PayloadStorage
     /**
      * Search and return payload for subscriber.
      *
-     * @param  string $subscriber
+     * @param  Subscriber $subscriber
      * @return Notification
      */
-    public function getNotification($subscriber);
+    public function getNotification(Subscriber $subscriber);
 
     /**
-     * Assign payload to subscriber.
+     * Save payload for endpoint.
      *
-     * @param string $subscriber
-     * @param string $notification
-     * @param int $lifetime
+     * @param  Subscriber $subscriber
+     * @param  Notification $notification
+     * @param  int $lifetime
      */
-    public function assignNotificationToSubscriber($subscriber, $notification, $lifetime);
+    public function assignNotificationToSubscriber(Subscriber $subscriber, Notification $notification, $lifetime = 86400);
 }

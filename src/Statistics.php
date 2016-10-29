@@ -1,43 +1,71 @@
 <?php
 
-namespace Notimatica\Driver\StatisticsStorages;
+namespace Notimatica\Driver;
 
 use League\Event\ListenerAcceptorInterface;
 use League\Event\ListenerProviderInterface;
+use Notimatica\Driver\Contracts\NotificationRepository;
 use Notimatica\Driver\Events\NotificationClicked;
 use Notimatica\Driver\Events\NotificationDelivered;
 use Notimatica\Driver\Events\NotificationFailed;
 use Notimatica\Driver\Events\NotificationSent;
 
-abstract class AbstractStorage implements ListenerProviderInterface
+class Statistics implements ListenerProviderInterface
 {
+    /**
+     * @var NotificationRepository
+     */
+    protected $notificationRepository;
+
+    /**
+     * Create a new StatisticsStorage.
+     *
+     * @param NotificationRepository $notificationRepository
+     */
+    public function __construct(NotificationRepository $notificationRepository)
+    {
+        $this->notificationRepository = $notificationRepository;
+    }
+
     /**
      * Number of sent pushes.
      *
      * @param  NotificationSent $event
      */
-    abstract public function sent(NotificationSent $event);
+    public function sent(NotificationSent $event)
+    {
+        $this->notificationRepository->increment($event->notification, 'sent', $event->number);
+    }
 
     /**
      * Number of delivered pushes.
      *
      * @param  NotificationDelivered $event
      */
-    abstract public function delivered(NotificationDelivered $event);
+    public function delivered(NotificationDelivered $event)
+    {
+        $this->notificationRepository->increment($event->notification, 'delivered', $event->number);
+    }
 
     /**
      * Number of clicked pushes.
      *
      * @param  NotificationClicked $event
      */
-    abstract public function clicked(NotificationClicked $event);
+    public function clicked(NotificationClicked $event)
+    {
+        $this->notificationRepository->increment($event->notification, 'clicked', $event->number);
+    }
 
     /**
      * Number of failed pushes.
      *
      * @param  NotificationFailed $event
      */
-    abstract public function failed(NotificationFailed $event);
+    public function failed(NotificationFailed $event)
+    {
+        $this->notificationRepository->increment($event->notification, 'failed', $event->number);
+    }
 
     /**
      * Provide event.

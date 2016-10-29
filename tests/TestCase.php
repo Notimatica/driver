@@ -3,6 +3,8 @@
 namespace Notimatica\Driver\Tests;
 
 use Notimatica\Driver\Contracts\Notification;
+use Notimatica\Driver\Contracts\NotificationRepository;
+use Notimatica\Driver\Contracts\PayloadStorage;
 use Notimatica\Driver\Contracts\Subscriber;
 use Notimatica\Driver\Driver;
 use Notimatica\Driver\Project;
@@ -11,6 +13,7 @@ use Notimatica\Driver\Providers\Chrome;
 use Notimatica\Driver\Providers\Firefox;
 use Notimatica\Driver\Providers\Safari;
 use Notimatica\Driver\ProvidersFactory;
+use Notimatica\Driver\Statistics;
 use ReflectionClass;
 
 abstract class TestCase extends \PHPUnit_Framework_TestCase
@@ -131,7 +134,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
      */
     protected function makeDriver()
     {
-        return new Driver($this->makeProject());
+        return new Driver($this->makeProject(), $this->makePayloadStorage(), $this->makeStatistics());
     }
 
     /**
@@ -147,6 +150,44 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 
         return $factory->make($provider, $config[$provider])
             ->setProject($this->makeProject());
+    }
+
+    /**
+     * @return Statistics
+     */
+    protected function makeStatistics()
+    {
+        $storage = new Statistics($this->makeNotificationRepository());
+
+        return $storage;
+    }
+
+    /**
+     * @return \Mockery\MockInterface|PayloadStorage
+     */
+    protected function makePayloadStorage()
+    {
+        $storage = \Mockery::mock(PayloadStorage::class);
+        $storage->shouldReceive('getNotification')->andReturn($this->makeNotification());
+        $storage->shouldReceive('assignNotificationToSubscriber');
+
+        return $storage;
+    }
+
+    /**
+     * @return \Mockery\MockInterface|NotificationRepository
+     */
+    protected function makeNotificationRepository()
+    {
+        $repository = \Mockery::mock(NotificationRepository::class);
+        $repository->shouldReceive('all')->andReturn([
+            $this->makeNotification()
+        ]);
+        $repository->shouldReceive('find')->andReturn($this->makeNotification());
+        $repository->shouldReceive('make')->andReturn($this->makeNotification());
+        $repository->shouldReceive('increment');
+
+        return $repository;
     }
 
     /**

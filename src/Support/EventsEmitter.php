@@ -5,8 +5,6 @@ namespace Notimatica\Driver\Support;
 use League\Event\Emitter;
 use League\Event\EventInterface;
 use League\Event\ListenerInterface;
-use Notimatica\Driver\StatisticsStorages\AbstractStorage;
-use Notimatica\Driver\StatisticsStoragesFactory;
 
 trait EventsEmitter
 {
@@ -23,18 +21,6 @@ trait EventsEmitter
         static::$events = new Emitter();
 
         $this->bootListeners();
-    }
-
-    /**
-     * Boot event listeners.
-     */
-    protected function bootListeners()
-    {
-        $statisticsStorage = $this->makeStatisticsStorage();
-
-        if (! is_null($statisticsStorage)) {
-            static::$events->useListenerProvider($statisticsStorage);
-        }
     }
 
     /**
@@ -67,21 +53,5 @@ trait EventsEmitter
     public static function off($event)
     {
         static::$events->removeAllListeners($event);
-    }
-
-    /**
-     * Make statistics storage.
-     *
-     * @return AbstractStorage|null
-     */
-    protected function makeStatisticsStorage()
-    {
-        if (! empty($this->project->config['statistics']['storage'])) {
-            $storage = $this->project->config['statistics']['storage'];
-
-            if (class_exists($storage)) return new $storage;
-        }
-
-        return null;
     }
 }

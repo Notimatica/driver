@@ -22,6 +22,14 @@ interface SubscriberRepository
     public function find($id);
 
     /**
+     * Find subscriber by id.
+     *
+     * @param  string $token
+     * @return Subscriber|null
+     */
+    public function findByToken($token);
+
+    /**
      * Subscribe to notifications.
      *
      * @param  string $provider

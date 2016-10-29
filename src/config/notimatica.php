@@ -23,7 +23,7 @@ return [
             'url' => 'ssl://gateway.push.apple.com:2195',
         ],
     ],
-    'statistics' => [
-        'storage' => \Notimatica\Driver\StatisticsStorages\Model::class,
-    ],
+    'payload' => [
+        'subscriber_lifetime' => 86400,
+    ]
 ];

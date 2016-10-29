@@ -48,7 +48,7 @@ class DriverTest extends TestCase
         $unknownProviderSubscriber->shouldReceive('getProvider')->andReturn('123');
         $unknownProviderSubscriber->shouldReceive('getToken')->andReturn('2222');
 
-        $driver->to([
+        $driver->send($this->makeNotification())->to([
             $this->makeChromeSubscriber(),
             $unknownProviderSubscriber,
         ]);
