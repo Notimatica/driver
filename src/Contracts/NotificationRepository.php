@@ -16,7 +16,10 @@ interface NotificationRepository
     /**
      * Make notification.
      *
+     * @param  string $title
+     * @param  string $body
+     * @param  string $url
      * @return Notification
      */
-    public function make();
+    public function make($title, $body, $url);
 }

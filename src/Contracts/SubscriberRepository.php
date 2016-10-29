@@ -18,9 +18,10 @@ interface SubscriberRepository
      *
      * @param  string $provider
      * @param  array $data
+     * @param  array $extra
      * @return Subscriber
      */
-    public function subscribe($provider, array $data = []);
+    public function subscribe($provider, array $data = [], array $extra = []);
 
     /**
      * Unsubscribe.
