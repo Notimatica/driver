@@ -7,7 +7,7 @@ interface Notification
     /**
      * Returns unique notification's id.
      *
-     * @return string
+     * @return integer|string
      */
     public function getId();
 
@@ -24,6 +24,13 @@ interface Notification
      * @return string
      */
     public function getBody();
+
+    /**
+     * Returns notification's onclick url.
+     *
+     * @return string
+     */
+    public function getUrl();
 
     /**
      * Increments attribute value.
