@@ -31,12 +31,4 @@ interface Notification
      * @return string
      */
     public function getUrl();
-
-    /**
-     * Increments attribute value.
-     *
-     * @param  string $column
-     * @param  int $amount
-     */
-    public function increment($column, $amount = 1);
 }
