@@ -5,21 +5,21 @@ namespace Notimatica\Driver\Contracts;
 interface Subscriber
 {
     /**
-     * Returns unique subscriber's uuid.
+     * Returns unique subscriber's id.
      *
      * @return string
      */
-    public function getUuid();
+    public function getId();
 
     /**
-     * Returns unique subscriber's uuid.
+     * Returns subscriber's provider.
      *
      * @return string
      */
     public function getProvider();
 
     /**
-     * Returns notifications provider's token.
+     * Returns subscriber's provider token.
      *
      * @return string
      */

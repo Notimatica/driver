@@ -41,7 +41,7 @@ class PayloadStorage
      */
     public function getNotification($subscriber)
     {
-        $uuid = $subscriber instanceof Subscriber ? $subscriber->getUuid() : $subscriber;
+        $uuid = $subscriber instanceof Subscriber ? $subscriber->getId() : $subscriber;
 
         return $this->storage->getNotification($uuid);
     }
@@ -55,8 +55,8 @@ class PayloadStorage
     public function assignNotificationToSubscriber(Subscriber $subscriber, Notification $notification)
     {
         $this->storage->assignNotificationToSubscriber(
-            $subscriber->getUuid(),
-            $notification->getUuid(),
+            $subscriber->getId(),
+            $notification->getId(),
             $this->config['subscriber_lifetime']
         );
     }

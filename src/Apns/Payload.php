@@ -38,7 +38,7 @@ class Payload implements \JsonSerializable
                     'body' => $this->limitString($this->notification->getBody(), static::BODY_LENGTH - 3),
                 ],
                 'url-args' => [
-                    $this->notification->getUuid(),
+                    $this->notification->getId(),
                 ],
             ],
         ];

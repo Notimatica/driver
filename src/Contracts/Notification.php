@@ -5,11 +5,11 @@ namespace Notimatica\Driver\Contracts;
 interface Notification
 {
     /**
-     * Returns unique notification's uuid.
+     * Returns unique notification's id.
      *
      * @return string
      */
-    public function getUuid();
+    public function getId();
 
     /**
      * Returns notification's title.
