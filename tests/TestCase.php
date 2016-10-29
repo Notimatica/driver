@@ -155,7 +155,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     protected function makeNotification()
     {
         $notification = \Mockery::mock(Notification::class);
-        $notification->shouldReceive('getUuid')->andReturn('05350612-c647-41e0-acbe-8d3eb0a19855');
+        $notification->shouldReceive('getId')->andReturn('05350612-c647-41e0-acbe-8d3eb0a19855');
         $notification->shouldReceive('getTitle')->andReturn('Test title');
         $notification->shouldReceive('getBody')->andReturn('Notification body with long long long long long long long long long long long body to trim.');
 
@@ -170,7 +170,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     protected function makeChromeSubscriber($uuid = 'a060f737-a83a-465a-bcc9-26e5c4a2cea4', $token = '111122223333qqqwweee')
     {
         $subscriber = \Mockery::mock(Subscriber::class);
-        $subscriber->shouldReceive('getUuid')->andReturn($uuid);
+        $subscriber->shouldReceive('getId')->andReturn($uuid);
         $subscriber->shouldReceive('getProvider')->andReturn(Chrome::NAME);
         $subscriber->shouldReceive('getToken')->andReturn($token);
 
@@ -185,7 +185,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     protected function makeFirefoxSubscriber($uuid = 'a060f737-a83a-465a-bcc9-26e5c4a2cea4', $token = '111122223333qqqwweee')
     {
         $subscriber = \Mockery::mock(Subscriber::class);
-        $subscriber->shouldReceive('getUuid')->andReturn($uuid);
+        $subscriber->shouldReceive('getId')->andReturn($uuid);
         $subscriber->shouldReceive('getProvider')->andReturn(Firefox::NAME);
         $subscriber->shouldReceive('getToken')->andReturn($token);
 
@@ -200,7 +200,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     protected function makeSafariSubscriber($uuid = 'a060f737-a83a-465a-bcc9-26e5c4a2cea4', $token = '111122223333444aaabbb')
     {
         $subscriber = \Mockery::mock(Subscriber::class);
-        $subscriber->shouldReceive('getUuid')->andReturn($uuid);
+        $subscriber->shouldReceive('getId')->andReturn($uuid);
         $subscriber->shouldReceive('getProvider')->andReturn(Safari::NAME);
         $subscriber->shouldReceive('getToken')->andReturn($token);
 
