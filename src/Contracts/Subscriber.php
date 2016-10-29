@@ -24,4 +24,9 @@ interface Subscriber
      * @return string
      */
     public function getToken();
+
+    /**
+     * Destroy subscriber.
+     */
+    public function unsubscribe();
 }

@@ -30,11 +30,4 @@ interface SubscriberRepository
      * @return Subscriber
      */
     public function subscribe($provider, array $data = [], array $extra = []);
-
-    /**
-     * Unsubscribe.
-     *
-     * @param  Subscriber $subscriber
-     */
-    public function unsubscribe(Subscriber $subscriber);
 }
