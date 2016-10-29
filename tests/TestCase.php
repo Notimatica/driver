@@ -163,14 +163,14 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param string $uuid
+     * @param string $id
      * @param string $token
      * @return \Mockery\MockInterface|Subscriber
      */
-    protected function makeChromeSubscriber($uuid = 'a060f737-a83a-465a-bcc9-26e5c4a2cea4', $token = '111122223333qqqwweee')
+    protected function makeChromeSubscriber($id = '2', $token = '111122223333qqqwweee')
     {
         $subscriber = \Mockery::mock(Subscriber::class);
-        $subscriber->shouldReceive('getId')->andReturn($uuid);
+        $subscriber->shouldReceive('getId')->andReturn($id);
         $subscriber->shouldReceive('getProvider')->andReturn(Chrome::NAME);
         $subscriber->shouldReceive('getToken')->andReturn($token);
 
@@ -178,14 +178,14 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param string $uuid
+     * @param string $id
      * @param string $token
      * @return \Mockery\MockInterface|Subscriber
      */
-    protected function makeFirefoxSubscriber($uuid = 'a060f737-a83a-465a-bcc9-26e5c4a2cea4', $token = '111122223333qqqwweee')
+    protected function makeFirefoxSubscriber($id = 'a060f737-a83a-465a-bcc9-26e5c4a2cea4', $token = '111122223333qqqwweee')
     {
         $subscriber = \Mockery::mock(Subscriber::class);
-        $subscriber->shouldReceive('getId')->andReturn($uuid);
+        $subscriber->shouldReceive('getId')->andReturn($id);
         $subscriber->shouldReceive('getProvider')->andReturn(Firefox::NAME);
         $subscriber->shouldReceive('getToken')->andReturn($token);
 
@@ -193,14 +193,14 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param string $uuid
+     * @param string $id
      * @param string $token
      * @return \Mockery\MockInterface|Subscriber
      */
-    protected function makeSafariSubscriber($uuid = 'a060f737-a83a-465a-bcc9-26e5c4a2cea4', $token = '111122223333444aaabbb')
+    protected function makeSafariSubscriber($id = 'a060f737-a83a-465a-bcc9-26e5c4a2cea4', $token = '111122223333444aaabbb')
     {
         $subscriber = \Mockery::mock(Subscriber::class);
-        $subscriber->shouldReceive('getId')->andReturn($uuid);
+        $subscriber->shouldReceive('getId')->andReturn($id);
         $subscriber->shouldReceive('getProvider')->andReturn(Safari::NAME);
         $subscriber->shouldReceive('getToken')->andReturn($token);
 
