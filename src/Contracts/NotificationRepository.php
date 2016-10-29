@@ -29,5 +29,5 @@ interface NotificationRepository
      * @param  string $url
      * @return Notification
      */
-    public function make($title, $body, $url);
+    public function make($title, $body, $url = '');
 }
