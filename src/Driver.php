@@ -55,6 +55,7 @@ class Driver
     public function boot()
     {
         $this->bootEvents();
+        $this->bootListeners();
     }
 
     /**

@@ -19,8 +19,6 @@ trait EventsEmitter
     public function bootEvents()
     {
         static::$events = new Emitter();
-
-        $this->bootListeners();
     }
 
     /**
