@@ -4,6 +4,7 @@ namespace Notimatica\Driver;
 
 use Notimatica\Driver\Contracts\Notification;
 use Notimatica\Driver\Contracts\Subscriber;
+use Notimatica\Driver\Events\NotificationClicked;
 use Notimatica\Driver\PayloadStorage as PayloadStorageContract;
 use Notimatica\Driver\Providers\AbstractProvider;
 use Notimatica\Driver\Support\EventsEmitter;
@@ -103,13 +104,16 @@ class Driver
     }
 
     /**
+     * Process notification click.
      *
-     *
-     * @param Notification $notification
+     * @param  Notification $notification
+     * @return string
      */
     public function processClick(Notification $notification)
     {
+        static::emit(new NotificationClicked($notification));
 
+        return $notification->getUrl();
     }
 
     /**
