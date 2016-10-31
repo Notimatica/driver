@@ -33,9 +33,10 @@ interface SubscriberRepository
      * Subscribe to notifications.
      *
      * @param  string $provider
-     * @param  array $data
+     * @param  string $token
+     * @param  array $env
      * @param  array $extra
      * @return Subscriber
      */
-    public function subscribe($provider, array $data = [], array $extra = []);
+    public function subscribe($provider, $token, array $env = [], array $extra = []);
 }
