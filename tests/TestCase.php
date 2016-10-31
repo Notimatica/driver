@@ -4,9 +4,9 @@ namespace Notimatica\Driver\Tests;
 
 use Notimatica\Driver\Contracts\Notification;
 use Notimatica\Driver\Contracts\NotificationRepository;
-use Notimatica\Driver\Contracts\PayloadStorage;
 use Notimatica\Driver\Contracts\Subscriber;
 use Notimatica\Driver\Driver;
+use Notimatica\Driver\PayloadStorage;
 use Notimatica\Driver\Project;
 use Notimatica\Driver\Providers\AbstractProvider;
 use Notimatica\Driver\Providers\Chrome;

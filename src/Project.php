@@ -2,6 +2,7 @@
 
 namespace Notimatica\Driver;
 
+use Notimatica\Driver\Contracts\Notification;
 use Notimatica\Driver\Providers\AbstractProvider;
 
 class Project
@@ -9,7 +10,11 @@ class Project
     /**
      * @var string
      */
-    public $name = '';
+    public $name;
+    /**
+     * @var string
+     */
+    public $baseUrl;
     /**
      * @var array
      */
@@ -18,10 +23,6 @@ class Project
      * @var AbstractProvider[]
      */
     public $providers = [];
-    /**
-     * @var string
-     */
-    public $baseUrl;
 
     /**
      * Create a new Project.

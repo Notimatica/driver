@@ -25,5 +25,6 @@ return [
     ],
     'payload' => [
         'subscriber_lifetime' => 86400,
+        'url' => ''
     ]
 ];

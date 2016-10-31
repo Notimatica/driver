@@ -3,8 +3,8 @@
 namespace Notimatica\Driver;
 
 use Notimatica\Driver\Contracts\Notification;
-use Notimatica\Driver\Contracts\PayloadStorage as PayloadStorageContract;
 use Notimatica\Driver\Contracts\Subscriber;
+use Notimatica\Driver\PayloadStorage as PayloadStorageContract;
 use Notimatica\Driver\Providers\AbstractProvider;
 use Notimatica\Driver\Support\EventsEmitter;
 
@@ -103,6 +103,16 @@ class Driver
     }
 
     /**
+     *
+     *
+     * @param Notification $notification
+     */
+    public function processClick(Notification $notification)
+    {
+
+    }
+
+    /**
      * Cast provider.
      *
      * @param  string $name
@@ -137,7 +147,7 @@ class Driver
             $partials[$provider][] = $subscriber;
 
             if ($this->payloadStorage) {
-                $this->payloadStorage->assignNotificationToSubscriber(
+                $this->payloadStorage->assignPayloadToSubscriber(
                     $subscriber,
                     $this->notification,
                     $this->project->config['payload']['subscriber_lifetime']
