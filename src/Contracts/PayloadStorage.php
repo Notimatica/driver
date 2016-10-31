@@ -15,9 +15,9 @@ interface PayloadStorage
     /**
      * Save payload for endpoint.
      *
-     * @param  Subscriber $subscriber
      * @param  Notification $notification
+     * @param  Subscriber $subscriber
      * @param  int $lifetime
      */
-    public function assignNotificationToSubscriber(Subscriber $subscriber, Notification $notification, $lifetime = 86400);
+    public function assignNotificationToSubscriber(Notification $notification, Subscriber $subscriber, $lifetime = 86400);
 }
