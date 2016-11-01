@@ -5,6 +5,7 @@ namespace Notimatica\Driver\Tests;
 use Notimatica\Driver\Contracts\Notification;
 use Notimatica\Driver\Contracts\NotificationRepository;
 use Notimatica\Driver\Contracts\Subscriber;
+use Notimatica\Driver\Contracts\SubscriberRepository;
 use Notimatica\Driver\Driver;
 use Notimatica\Driver\PayloadStorage;
 use Notimatica\Driver\Project;
@@ -134,7 +135,13 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
      */
     protected function makeDriver()
     {
-        return new Driver($this->makeProject(), $this->makePayloadStorage(), $this->makeStatistics());
+        return new Driver(
+            $this->makeProject(),
+            $this->makeNotificationRepository(),
+            $this->makeSubscriberRepository(),
+            $this->makePayloadStorage(),
+            $this->makeStatistics()
+        );
     }
 
     /**
@@ -167,9 +174,9 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
      */
     protected function makePayloadStorage()
     {
-        $storage = \Mockery::mock(PayloadStorage::class);
-        $storage->shouldReceive('getNotification')->andReturn($this->makeNotification());
-        $storage->shouldReceive('assignNotificationToSubscriber');
+        $storage = \Mockery::mock(PayloadStorage::class)->makePartial();
+        $storage->shouldReceive('getPayloadForSubscriber')->andReturn($this->makeNotification());
+        $storage->shouldReceive('assignPayloadToSubscriber');
 
         return $storage;
     }
@@ -201,6 +208,24 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         $notification->shouldReceive('getBody')->andReturn('Notification body with long long long long long long long long long long long body to trim.');
 
         return $notification;
+    }
+
+    /**
+     * @return \Mockery\MockInterface|SubscriberRepository
+     */
+    protected function makeSubscriberRepository()
+    {
+        $repository = \Mockery::mock(SubscriberRepository::class);
+        $repository->shouldReceive('all')->andReturn([
+            $this->makeChromeSubscriber(),
+            $this->makeFirefoxSubscriber(),
+            $this->makeSafariSubscriber(),
+        ]);
+        $repository->shouldReceive('find')->andReturn($this->makeChromeSubscriber());
+        $repository->shouldReceive('findByToken')->andReturn($this->makeChromeSubscriber());
+        $repository->shouldReceive('subscribe')->andReturn($this->makeChromeSubscriber());
+
+        return $repository;
     }
 
     /**

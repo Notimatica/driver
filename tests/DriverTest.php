@@ -48,24 +48,16 @@ class DriverTest extends TestCase
         $unknownProviderSubscriber->shouldReceive('getProvider')->andReturn('123');
         $unknownProviderSubscriber->shouldReceive('getToken')->andReturn('2222');
 
-        $driver->send($this->makeNotification())->to([
+        $driver->send($this->makeNotification());
+
+        $splitSubscribers = $this->getPublicMethod('splitSubscribers', $driver);
+        $partials = $splitSubscribers->invoke($driver, [
             $this->makeChromeSubscriber(),
             $unknownProviderSubscriber,
         ]);
 
-        $splitSubscribers = $this->getPublicMethod('splitSubscribers', $driver);
-        $this->assertInternalType('array', $splitSubscribers->invoke($driver));
-        $this->assertCount(1, $splitSubscribers->invoke($driver));
-    }
-
-    /**
-     * @test
-     */
-    public function it_validates_subscribers_input()
-    {
-        $driver = $this->makeDriver();
-        $this->setExpectedException(\RuntimeException::class, 'No subscribers set.');
-        $driver->send($this->makeNotification())->flush();
+        $this->assertInternalType('array', $partials);
+        $this->assertCount(1, $partials);
     }
 
     /**
