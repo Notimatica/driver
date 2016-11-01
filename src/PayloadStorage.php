@@ -28,7 +28,7 @@ abstract class PayloadStorage
      * @param  Subscriber $subscriber
      * @return Notification
      */
-    abstract public function getPayload(Subscriber $subscriber);
+    abstract public function getPayloadForSubscriber(Subscriber $subscriber);
 
     /**
      * Save payload for endpoint.

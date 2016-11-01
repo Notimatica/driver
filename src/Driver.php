@@ -3,8 +3,11 @@
 namespace Notimatica\Driver;
 
 use Notimatica\Driver\Contracts\Notification;
+use Notimatica\Driver\Contracts\NotificationRepository;
 use Notimatica\Driver\Contracts\Subscriber;
+use Notimatica\Driver\Contracts\SubscriberRepository;
 use Notimatica\Driver\Events\NotificationClicked;
+use Notimatica\Driver\Events\NotificationDelivered;
 use Notimatica\Driver\PayloadStorage as PayloadStorageContract;
 use Notimatica\Driver\Providers\AbstractProvider;
 use Notimatica\Driver\Support\EventsEmitter;
@@ -33,17 +36,35 @@ class Driver
      * @var Statistics
      */
     protected $statisticsStorage;
+    /**
+     * @var NotificationRepository
+     */
+    private $notificationRepository;
+    /**
+     * @var SubscriberRepository
+     */
+    private $subscriberRepository;
 
     /**
      * Create a new Driver.
      *
      * @param Project $project
-     * @param PayloadStorageContract $payloadStorage
+     * @param NotificationRepository $notificationRepository
+     * @param SubscriberRepository $subscriberRepository
+     * @param PayloadStorage $payloadStorage
      * @param Statistics $statisticsStorage
      */
-    public function __construct(Project $project, PayloadStorageContract $payloadStorage = null, Statistics $statisticsStorage = null)
+    public function __construct(
+        Project $project,
+        NotificationRepository $notificationRepository = null,
+        SubscriberRepository $subscriberRepository = null,
+        PayloadStorageContract $payloadStorage = null,
+        Statistics $statisticsStorage = null
+    )
     {
         $this->project = $project;
+        $this->notificationRepository = $notificationRepository;
+        $this->subscriberRepository = $subscriberRepository;
         $this->payloadStorage = $payloadStorage;
         $this->statisticsStorage = $statisticsStorage;
 
@@ -78,7 +99,7 @@ class Driver
      * @param  array $subscribers
      * @return $this
      */
-    public function to(array $subscribers)
+    public function to(array $subscribers = [])
     {
         $this->subscribers = $subscribers;
 
@@ -90,9 +111,15 @@ class Driver
      */
     public function flush()
     {
-        $this->validate();
+        if (is_null($this->notification)) {
+            throw new \RuntimeException("Notification wasn't set.");
+        }
 
-        $partials = $this->splitSubscribers();
+        $partials = $this->splitSubscribers(
+            empty($this->subscribers)
+                ? $this->subscriberRepository->all()
+                : $this->subscribers
+        );
 
         foreach ($partials as $provider => $subscribers) {
             try {
@@ -104,12 +131,29 @@ class Driver
     }
 
     /**
+     * Get payload for the subscriber.
+     *
+     * @param  string $subscriberToken
+     * @return Notification
+     */
+    public function retrievePayload($subscriberToken)
+    {
+        $subscriber     = $this->subscriberRepository->findByToken($subscriberToken);
+        $payload        = $this->payloadStorage->getPayloadForSubscriber($subscriber);
+        $notification   = $this->notificationRepository->find($payload['id']);
+
+        static::emit(new NotificationDelivered($notification));
+
+        return $payload;
+    }
+
+    /**
      * Process notification click.
      *
      * @param  Notification $notification
      * @return string
      */
-    public function processClick(Notification $notification)
+    public function processClicked(Notification $notification)
     {
         static::emit(new NotificationClicked($notification));
 
@@ -131,13 +175,15 @@ class Driver
     /**
      * Prepare notifications.
      * Split subscribers by their providers and prepare payload.
+     *
+     * @param  Subscriber[] $subscribers
+     * @return array
      */
-    protected function splitSubscribers()
+    protected function splitSubscribers(array $subscribers)
     {
         $partials = [];
 
-        /** @var Subscriber $subscriber */
-        foreach ($this->subscribers as $subscriber) {
+        foreach ($subscribers as $subscriber) {
             $provider = $subscriber->getProvider();
 
             if (! $this->project->providerConnected($provider)) {
@@ -152,30 +198,14 @@ class Driver
 
             if ($this->payloadStorage) {
                 $this->payloadStorage->assignPayloadToSubscriber(
-                    $subscriber,
                     $this->notification,
+                    $subscriber,
                     $this->project->config['payload']['subscriber_lifetime']
                 );
             }
         }
 
         return $partials;
-    }
-
-    /**
-     * Validate data.
-     *
-     * @throws \RuntimeException
-     */
-    protected function validate()
-    {
-        if (is_null($this->notification)) {
-            throw new \RuntimeException("Notification wasn't set.");
-        }
-
-        if (is_null($this->subscribers)) {
-            throw new \RuntimeException('No subscribers set.');
-        }
     }
 
     /**
