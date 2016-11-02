@@ -4,6 +4,9 @@ namespace Notimatica\Driver\Contracts;
 
 interface Subscriber
 {
+    const EXTRA_NAME_LENGTH  = 32;
+    const EXTRA_VALUE_LENGTH = 100;
+
     /**
      * Returns unique subscriber's id.
      *
