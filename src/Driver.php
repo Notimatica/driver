@@ -94,6 +94,19 @@ class Driver
     }
 
     /**
+     * Set project manually.
+     *
+     * @param  Project $project
+     * @return $this
+     */
+    public function from(Project $project)
+    {
+        $this->project = $project;
+
+        return $this;
+    }
+
+    /**
      * Endpoints to send to.
      *
      * @param  array $subscribers
@@ -206,19 +219,6 @@ class Driver
         }
 
         return $partials;
-    }
-
-    /**
-     * Set project manually.
-     *
-     * @param  Project $project
-     * @return $this
-     */
-    public function setProject(Project $project)
-    {
-        $this->project = $project;
-
-        return $this;
     }
 
     /**
