@@ -163,11 +163,13 @@ class Driver
     /**
      * Process notification click.
      *
-     * @param  Notification $notification
+     * @param  int|string $notificationId
      * @return string
      */
-    public function processClicked(Notification $notification)
+    public function processClicked($notificationId)
     {
+        $notification = $this->notificationRepository->find($notificationId);
+
         static::emit(new NotificationClicked($notification));
 
         return $notification->getUrl();
