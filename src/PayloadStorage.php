@@ -54,8 +54,8 @@ abstract class PayloadStorage
             'title' => $notification->getTitle(),
             'body' => $notification->getBody(),
             'url' => $this->makeClickUrl($notification),
-            'icon' => $this,
-            'tag' => $this->makeTag(),
+            'icon' => $this->makeIcon($notification),
+            'tag' => $this->makeTag($notification),
         ];
     }
 
@@ -64,7 +64,7 @@ abstract class PayloadStorage
      *
      * @return string
      */
-    public function makeClickUrl()
+    public function makeClickUrl($notification)
     {
         if (empty($this->project->config['payload']['url'])) {
             throw new \RuntimeException('Payload url is invalid');
@@ -72,9 +72,27 @@ abstract class PayloadStorage
 
         $url = $this->project->config['payload']['url'];
 
-        return starts_with('https://', $url)
-            ? $url
-            : $this->project->baseUrl . '/' . $this->project->config['payload']['url'];
+        return ! $this->isAbsoluteUrl($url)
+            ? $this->project->baseUrl . '/' . $url
+            : $url;
+    }
+
+    /**
+     * Make notification icon.
+     *
+     * @return string
+     */
+    protected function makeIcon($notification)
+    {
+        if (empty($this->project->config['icon_path'])) {
+            return null;
+        }
+
+        $icon = $this->project->config['icon_path'];
+
+        return ! $this->isAbsoluteUrl($icon)
+            ? $this->project->baseUrl . '/' . $icon
+            : $icon;
     }
 
     /**
@@ -82,8 +100,19 @@ abstract class PayloadStorage
      *
      * @return string
      */
-    private function makeTag()
+    protected function makeTag($notification)
     {
         return md5($this->project->baseUrl);
+    }
+
+    /**
+     * Check if url is absolute
+     *
+     * @param  string $url
+     * @return bool
+     */
+    protected function isAbsoluteUrl($url)
+    {
+        return (bool) preg_match('/^https:\/\//', $url);
     }
 }

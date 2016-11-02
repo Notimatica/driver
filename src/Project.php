@@ -34,8 +34,8 @@ class Project
     public function __construct($name, $baseUrl, array $config = [])
     {
         $this->name = $name;
-        $this->config = $config;
         $this->baseUrl = $baseUrl;
+        $this->config = $config;
 
         $this->buildProviders();
     }
