@@ -37,7 +37,7 @@ class ChromeTest extends TestCase
 
         $this->assertJson($manifest);
         $this->assertJsonStringEqualsJsonString($manifest, json_encode([
-            'name' => $this->makeProject()->name,
+            'name' => $this->makeProject()->getName(),
             'gcm_sender_id' => '111222333',
         ]));
     }

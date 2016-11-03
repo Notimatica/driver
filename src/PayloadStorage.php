@@ -66,14 +66,16 @@ abstract class PayloadStorage
      */
     public function makeClickUrl($notification)
     {
-        if (empty($this->project->config['payload']['url'])) {
+        $config = $this->project->getConfig();
+
+        if (empty($config['payload']['url'])) {
             throw new \RuntimeException('Payload url is invalid');
         }
 
-        $url = $this->project->config['payload']['url'];
+        $url = $config['payload']['url'];
 
         return ! $this->isAbsoluteUrl($url)
-            ? $this->project->baseUrl . '/' . $url
+            ? $this->project->getBaseUrl() . '/' . $url
             : $url;
     }
 
@@ -84,14 +86,16 @@ abstract class PayloadStorage
      */
     protected function makeIcon($notification)
     {
-        if (empty($this->project->config['icon_path'])) {
+        $config = $this->project->getConfig();
+
+        if (empty($config['icon_path'])) {
             return null;
         }
 
-        $icon = $this->project->config['icon_path'];
+        $icon = $config['icon_path'];
 
         return ! $this->isAbsoluteUrl($icon)
-            ? $this->project->baseUrl . '/' . $icon
+            ? $this->project->getBaseUrl() . '/' . $icon
             : $icon;
     }
 
@@ -102,7 +106,7 @@ abstract class PayloadStorage
      */
     protected function makeTag($notification)
     {
-        return md5($this->project->baseUrl);
+        return md5($this->project->getBaseUrl());
     }
 
     /**

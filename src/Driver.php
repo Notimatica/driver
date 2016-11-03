@@ -215,7 +215,7 @@ class Driver
                 $this->payloadStorage->assignPayloadToSubscriber(
                     $this->notification,
                     $subscriber,
-                    $this->project->config['payload']['subscriber_lifetime']
+                    $this->project->getConfig()['payload']['subscriber_lifetime']
                 );
             }
         }

@@ -89,11 +89,11 @@ class Safari extends AbstractProvider
     {
         $certificate = new Certificate($this->storage);
         $website = [
-            'websiteName' => $this->project->name,
+            'websiteName' => $this->project->getName(),
             'websitePushID' => $this->config['website_push_id'],
-            'allowedDomains' => [$this->project->baseUrl],
-            'urlFormatString' => "{$this->project->baseUrl}/go/%@",
-            'webServiceURL' => $this->project->baseUrl . '/' . $this->config['subscribe_url'],
+            'allowedDomains' => [$this->project->getBaseUrl()],
+            'urlFormatString' => "{$this->project->getBaseUrl()}/go/%@",
+            'webServiceURL' => $this->project->getBaseUrl() . '/' . $this->config['subscribe_url'],
         ];
 
         array_merge($website, $extra);

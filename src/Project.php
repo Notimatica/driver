@@ -41,6 +41,36 @@ class Project implements \Notimatica\Driver\Contracts\Project
     }
 
     /**
+     * Returns project's name.
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Returns project's base url.
+     *
+     * @return string
+     */
+    public function getBaseUrl()
+    {
+        return $this->baseUrl;
+    }
+
+    /**
+     * Returns project's config.
+     *
+     * @return array
+     */
+    public function getConfig()
+    {
+        return $this->config;
+    }
+
+    /**
      * Make providers.
      *
      * @return AbstractProvider[]

@@ -166,7 +166,7 @@ class Chrome extends AbstractProvider
     public function manifest()
     {
         return json_encode([
-            'name' => $this->project->name,
+            'name' => $this->project->getName(),
             'gcm_sender_id' => $this->config['sender_id'],
         ], JSON_PRETTY_PRINT);
     }

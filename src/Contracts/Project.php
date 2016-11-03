@@ -7,6 +7,27 @@ use Notimatica\Driver\Providers\AbstractProvider;
 interface Project
 {
     /**
+     * Returns project's name.
+     *
+     * @return string
+     */
+    public function getName();
+
+    /**
+     * Returns project's base url.
+     *
+     * @return string
+     */
+    public function getBaseUrl();
+
+    /**
+     * Returns project's config.
+     *
+     * @return array
+     */
+    public function getConfig();
+
+    /**
      * Make providers.
      *
      * @return AbstractProvider[]

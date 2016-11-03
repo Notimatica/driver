@@ -7,8 +7,6 @@ use League\Event\Event;
 use Notimatica\Driver\Contracts\Subscriber;
 use Notimatica\Driver\Driver;
 use Notimatica\Driver\Project;
-use Notimatica\Driver\Providers\AbstractProvider;
-use Notimatica\Driver\ProvidersFactory;
 
 class DriverTest extends TestCase
 {
