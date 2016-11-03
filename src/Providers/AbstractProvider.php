@@ -49,6 +49,13 @@ abstract class AbstractProvider
     }
 
     /**
+     * If provider is enabled.
+     *
+     * @return boolean
+     */
+    abstract public function isEnabled();
+
+    /**
      * Send notification.
      *
      * @param  Notification $notification

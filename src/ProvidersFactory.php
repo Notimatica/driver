@@ -33,6 +33,7 @@ class ProvidersFactory
      * @param  string $name
      * @param  array $options
      * @return AbstractProvider
+     * @throws \RuntimeException For unsupported provider
      */
     public function make($name, array $options = [])
     {
@@ -54,6 +55,10 @@ class ProvidersFactory
                 default:
                     throw new \RuntimeException("Unsupported provider '$name'");
             }
+        }
+
+        if (! $provider->isEnabled()) {
+            throw new \RuntimeException("Unsupported provider '$name'");
         }
 
         return $provider;

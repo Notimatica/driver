@@ -170,4 +170,14 @@ class Chrome extends AbstractProvider
             'gcm_sender_id' => $this->config['sender_id'],
         ], JSON_PRETTY_PRINT);
     }
+
+    /**
+     * If provider is enabled.
+     *
+     * @return boolean
+     */
+    public function isEnabled()
+    {
+        return ! empty($this->config['sender_id']) && ! empty($this->config['api_key']);
+    }
 }

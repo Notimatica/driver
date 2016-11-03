@@ -117,4 +117,14 @@ class Firefox extends AbstractProvider
     {
         return $this->config['url'] . '/' . $subscriber->getToken();
     }
+
+    /**
+     * If provider is enabled.
+     *
+     * @return boolean
+     */
+    public function isEnabled()
+    {
+        return true;
+    }
 }

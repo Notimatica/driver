@@ -115,7 +115,9 @@ class NotimaticaProject implements \Notimatica\Driver\Contracts\Project
 
         if (! empty($this->config['providers']) && is_array($this->config['providers'])) {
             foreach ($this->config['providers'] as $name => $options) {
-                $this->providers[$name] = $providersFactory->make($name, $options)->setProject($this);
+                try {
+                    $this->providers[$name] = $providersFactory->make($name, $options)->setProject($this);
+                } catch (\RuntimeException $e) {}
             }
         }
     }

@@ -104,4 +104,14 @@ class Safari extends AbstractProvider
 
         return $package->generate();
     }
+
+    /**
+     * If provider is enabled.
+     *
+     * @return boolean
+     */
+    public function isEnabled()
+    {
+        return ! empty($this->config['website_push_id']);
+    }
 }
