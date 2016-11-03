@@ -6,7 +6,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Pool;
 use Notimatica\Driver\Contracts\Notification;
 use Notimatica\Driver\Contracts\Subscriber;
-use Notimatica\Driver\Project;
+use Notimatica\Driver\Contracts\Project;
 
 abstract class AbstractProvider
 {
@@ -43,7 +43,7 @@ abstract class AbstractProvider
      */
     public function setProject(Project $project)
     {
-        $this->project  = $project;
+        $this->project = $project;
 
         return $this;
     }

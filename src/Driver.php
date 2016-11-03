@@ -4,6 +4,7 @@ namespace Notimatica\Driver;
 
 use Notimatica\Driver\Contracts\Notification;
 use Notimatica\Driver\Contracts\NotificationRepository;
+use Notimatica\Driver\Contracts\Project;
 use Notimatica\Driver\Contracts\Subscriber;
 use Notimatica\Driver\Contracts\SubscriberRepository;
 use Notimatica\Driver\Events\NotificationClicked;

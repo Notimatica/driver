@@ -3,6 +3,7 @@
 namespace Notimatica\Driver;
 
 use Notimatica\Driver\Contracts\Notification;
+use Notimatica\Driver\Contracts\Project;
 use Notimatica\Driver\Contracts\Subscriber;
 
 abstract class PayloadStorage

@@ -85,6 +85,7 @@ class Project implements \Notimatica\Driver\Contracts\Project
      *
      * @param  string $name
      * @return AbstractProvider
+     * @throws \RuntimeException If provider isn't connected
      */
     public function getProvider($name)
     {
