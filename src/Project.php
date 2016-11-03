@@ -5,7 +5,7 @@ namespace Notimatica\Driver;
 use Notimatica\Driver\Contracts\Notification;
 use Notimatica\Driver\Providers\AbstractProvider;
 
-class Project
+class Project implements \Notimatica\Driver\Contracts\Project
 {
     /**
      * @var string
