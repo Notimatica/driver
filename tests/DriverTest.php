@@ -6,7 +6,7 @@ use League\Event\Emitter;
 use League\Event\Event;
 use Notimatica\Driver\Contracts\Subscriber;
 use Notimatica\Driver\Driver;
-use Notimatica\Driver\Project;
+use Notimatica\Driver\NotimaticaProject;
 
 class DriverTest extends TestCase
 {
@@ -74,9 +74,9 @@ class DriverTest extends TestCase
     public function it_can_set_and_return_project()
     {
         $driver = $this->makeDriver();
-        $this->assertInstanceOf(Project::class, $driver->getProject());
+        $this->assertInstanceOf(NotimaticaProject::class, $driver->getProject());
 
-        $driver->setProject(\Mockery::namedMock('FooProject', Project::class)->makePartial());
+        $driver->setProject(\Mockery::namedMock('FooProject', NotimaticaProject::class)->makePartial());
         $this->assertInstanceOf('FooProject', $driver->getProject());
     }
 }

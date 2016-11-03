@@ -8,7 +8,7 @@ use Notimatica\Driver\Contracts\Subscriber;
 use Notimatica\Driver\Contracts\SubscriberRepository;
 use Notimatica\Driver\Driver;
 use Notimatica\Driver\PayloadStorage;
-use Notimatica\Driver\Project;
+use Notimatica\Driver\NotimaticaProject;
 use Notimatica\Driver\Providers\AbstractProvider;
 use Notimatica\Driver\Providers\Chrome;
 use Notimatica\Driver\Providers\Firefox;
@@ -121,11 +121,11 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     /**
      * Make project.
      *
-     * @return Project
+     * @return NotimaticaProject
      */
     protected function makeProject()
     {
-        return new Project('Test Project', 'http://localhost', $this->getConfig());
+        return new NotimaticaProject('Test Project', 'http://localhost', $this->getConfig());
     }
 
     /**

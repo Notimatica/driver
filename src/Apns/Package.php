@@ -3,7 +3,7 @@
 namespace Notimatica\Driver\Apns;
 
 use League\Flysystem\Filesystem;
-use Notimatica\Driver\Project;
+use Notimatica\Driver\NotimaticaProject;
 
 class Package
 {
