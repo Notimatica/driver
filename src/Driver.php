@@ -130,7 +130,7 @@ class Driver
         }
 
         $partials = $this->splitSubscribers(
-            empty($this->subscribers)
+            is_null($this->subscribers)
                 ? $this->subscriberRepository->all()
                 : $this->subscribers
         );
@@ -152,6 +152,8 @@ class Driver
      */
     public function retrievePayload($subscriberToken)
     {
+        if (empty($subscriberToken)) throw new \RuntimeException('Empty subscriber token.');
+
         $subscriber     = $this->subscriberRepository->findByToken($subscriberToken);
         $payload        = $this->payloadStorage->getPayloadForSubscriber($subscriber);
         $notification   = $this->notificationRepository->find($payload['id']);
@@ -169,6 +171,8 @@ class Driver
      */
     public function processClicked($notificationId)
     {
+        if (empty($notificationId)) throw new \RuntimeException('Empty notification id.');
+
         $notification = $this->notificationRepository->find($notificationId);
 
         static::emit(new NotificationClicked($notification));

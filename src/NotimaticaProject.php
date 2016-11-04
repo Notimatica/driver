@@ -21,7 +21,7 @@ class NotimaticaProject implements \Notimatica\Driver\Contracts\Project
     /**
      * @var AbstractProvider[]
      */
-    public $providers = [];
+    public $providers;
 
     /**
      * Create a new Project.
@@ -34,9 +34,7 @@ class NotimaticaProject implements \Notimatica\Driver\Contracts\Project
     {
         $this->name = $name;
         $this->baseUrl = $baseUrl;
-        $this->config = $config;
-
-        $this->buildProviders();
+        $this->config = $config;;
     }
 
     /**
@@ -76,6 +74,10 @@ class NotimaticaProject implements \Notimatica\Driver\Contracts\Project
      */
     public function getProviders()
     {
+        if (is_null($this->providers)) {
+            $this->buildProviders();
+        }
+
         return $this->providers;
     }
 
@@ -103,7 +105,7 @@ class NotimaticaProject implements \Notimatica\Driver\Contracts\Project
      */
     public function providerConnected($name)
     {
-        return array_key_exists($name, $this->providers);
+        return array_key_exists($name, $this->getProviders());
     }
 
     /**
