@@ -45,7 +45,7 @@ class Safari extends AbstractProvider
     public function send(Notification $notification, array $subscribers)
     {
         $certificate = new Certificate($this->storage);
-        $stream  = new Streamer($certificate, $this->config['url']);
+        $stream  = new Streamer($certificate, $this->config['service_url']);
         $payload = new Payload($notification);
         $payload = json_encode($payload);
 

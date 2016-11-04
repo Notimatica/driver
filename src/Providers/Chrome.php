@@ -101,7 +101,7 @@ class Chrome extends AbstractProvider
      */
     protected function prepareRequests($subscribers, $payload = null)
     {
-        $url = $this->config['url'];
+        $url = $this->config['service_url'];
         $headers = static::$headers;
 
         foreach ($this->batch($subscribers) as $index => $chunk) {

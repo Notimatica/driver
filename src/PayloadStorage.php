@@ -69,11 +69,11 @@ abstract class PayloadStorage
     {
         $config = $this->project->getConfig();
 
-        if (empty($config['payload']['url'])) {
+        if (empty($config['payload']['click_url'])) {
             throw new \RuntimeException('Payload url is invalid');
         }
 
-        $url = $config['payload']['url'];
+        $url = $config['payload']['click_url'];
 
         return ! $this->isAbsoluteUrl($url)
             ? $this->project->getBaseUrl() . '/' . $url

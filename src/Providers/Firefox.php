@@ -115,7 +115,7 @@ class Firefox extends AbstractProvider
      */
     protected function getUrl(Subscriber $subscriber)
     {
-        return $this->config['url'] . '/' . $subscriber->getToken();
+        return $this->config['service_url'] . '/' . $subscriber->getToken();
     }
 
     /**
