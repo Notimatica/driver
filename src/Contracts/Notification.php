@@ -31,4 +31,9 @@ interface Notification
      * @return string
      */
     public function getUrl();
+
+    /**
+     * Delete notification.
+     */
+    public function delete();
 }

@@ -48,7 +48,7 @@ class ProvidersFactory
                     $provider = new Firefox($options);
                     break;
                 case Safari::NAME:
-                    $storage  = new Filesystem(new Local($options['storage_root']));
+                    $storage  = new Filesystem(new Local($options['assets']['root']));
                     $provider = new Safari($options);
                     $provider->setStorage($storage);
                     break;

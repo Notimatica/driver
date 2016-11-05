@@ -38,5 +38,5 @@ interface SubscriberRepository
      * @param  array $extra
      * @return Subscriber
      */
-    public function subscribe($provider, $token, array $env = [], array $extra = []);
+    public function make($provider, $token, array $env = [], array $extra = []);
 }

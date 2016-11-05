@@ -247,4 +247,14 @@ class Driver
             static::$events->useListenerProvider($this->statisticsStorage);
         }
     }
+
+    /**
+     * Helper to return default package config.
+     *
+     * @return array
+     */
+    public static function getConfig()
+    {
+        return require(__DIR__ . '/../config/notimatica.php');
+    }
 }

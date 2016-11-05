@@ -16,11 +16,25 @@ return [
             'concurrent_requests' => 100,
         ],
         \Notimatica\Driver\Providers\Safari::NAME => [
-            'storage_root' => '/safari_push_data',
-            'subscribe_url' => '/subscribe/safari',
             'safari_web_id' => '',
-            'package_path' => null,
+            'subscribe_url' => '/subscribe/safari',
             'service_url' => 'ssl://gateway.push.apple.com:2195',
+            'assets' => [
+                'root' => '/safari_push_data',
+                'package' => 'safari-package.zip',
+                'certificates' => [
+                    'p12'       => 'certificate.p12',
+                    'pem'       => 'certificate.pem',
+                    'password'  => 'certificate.password',
+                ],
+                'icons' => [
+                    'icon_16'   => 'icon_16x16.png',
+                    'icon_32'   => 'icon_32x32.png',
+                    'icon_64'   => 'icon_32x32@2x.png',
+                    'icon_128'  => 'icon_128x128.png',
+                    'icon_256'  => 'icon_128x128@2x.png',
+                ]
+            ],
         ],
     ],
     'payload' => [

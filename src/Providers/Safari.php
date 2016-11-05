@@ -2,7 +2,7 @@
 
 namespace Notimatica\Driver\Providers;
 
-use League\Flysystem\Filesystem;
+use League\Flysystem\FilesystemInterface;
 use Notimatica\Driver\Apns\Certificate;
 use Notimatica\Driver\Apns\Package;
 use Notimatica\Driver\Apns\Payload;
@@ -12,24 +12,23 @@ use Notimatica\Driver\Contracts\Subscriber;
 use Notimatica\Driver\Driver;
 use Notimatica\Driver\Events\NotificationFailed;
 use Notimatica\Driver\Events\NotificationSent;
-use ZipStream\ZipStream;
 
 class Safari extends AbstractProvider
 {
     const NAME = 'safari';
 
     /**
-     * @var Filesystem
+     * @var FilesystemInterface
      */
     protected $storage;
 
     /**
      * Set files storage.
      *
-     * @param  Filesystem $filesStorage
+     * @param  FilesystemInterface $filesStorage
      * @return $this
      */
-    public function setStorage(Filesystem $filesStorage)
+    public function setStorage(FilesystemInterface $filesStorage)
     {
         $this->storage = $filesStorage;
 
@@ -44,7 +43,7 @@ class Safari extends AbstractProvider
      */
     public function send(Notification $notification, array $subscribers)
     {
-        $certificate = new Certificate($this->storage);
+        $certificate = new Certificate($this->config['assets']['certificates'], $this->storage);
         $stream  = new Streamer($certificate, $this->config['service_url']);
         $payload = new Payload($notification);
         $payload = json_encode($payload);
@@ -83,11 +82,11 @@ class Safari extends AbstractProvider
      * Distribute connection package.
      *
      * @param  array $extra
-     * @return ZipStream
+     * @return string|null
      */
     public function connectionPackage($extra = [])
     {
-        $certificate = new Certificate($this->storage);
+        $certificate = new Certificate($this->config['assets']['certificates'], $this->storage);
         $website = [
             'websiteName' => $this->project->getName(),
             'websitePushID' => $this->config['website_push_id'],
@@ -99,8 +98,16 @@ class Safari extends AbstractProvider
         array_merge($website, $extra);
 
         $package = new Package(
+            $this->config['assets']['package'],
+            $this->config['assets']['icons'],
             $website, $certificate, $this->storage
         );
+
+        // Hack to not to rebuild package each time.
+        $path = $package->getPackagePath();
+        if ($this->storage->has($path)) {
+            return $path;
+        }
 
         return $package->generate();
     }
@@ -113,5 +120,15 @@ class Safari extends AbstractProvider
     public function isEnabled()
     {
         return ! empty($this->config['website_push_id']);
+    }
+
+    /**
+     * Return storage.
+     *
+     * @return FilesystemInterface
+     */
+    public function getStorage()
+    {
+        return $this->storage;
     }
 }

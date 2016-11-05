@@ -2,72 +2,70 @@
 
 namespace Notimatica\Driver\Apns;
 
-use League\Flysystem\Filesystem;
+use League\Flysystem\FilesystemInterface;
 
 class Certificate
 {
     /**
-     * @var Filesystem
+     * @var FilesystemInterface
      */
     protected $storage;
     /**
      * @var array
      */
-    protected $paths = [
-        'p12'       => 'certificate.p12',
-        'pem'       => 'certificate.pem',
-        'password'  => 'certificate.password',
-    ];
+    protected $files;
 
     /**
      * Create a new Certificate.
      *
-     * @param Filesystem $storage
+     * @param array $files
+     * @param FilesystemInterface $storage
      */
-    public function __construct(Filesystem $storage)
+    public function __construct(array $files, FilesystemInterface $storage)
     {
+        $this->files = $files;
         $this->storage = $storage;
     }
 
     /**
      * Return certificate.
      *
-     * @return string
+     * @return string|null
      */
     public function getP12Certificate()
     {
         try {
-            return $this->storage->get($this->paths['p12']);
+            return $this->storage->get($this->files['p12']);
         } catch (\Exception $e) {
-            return '';
+            return null;
         }
     }
 
     /**
      * Return password.
      *
-     * @return string
+     * @return string|null
      */
     public function getPassword()
     {
         try {
-            return $this->storage->get($this->paths['password']);
+            return $this->storage->get($this->files['password']);
         } catch (\Exception $e) {
-            return '';
+            return null;
         }
     }
 
     /**
      * Get pem certificate.
      *
-     * @return string
+     * @return string|null
      */
     public function getPemCertificate()
     {
         try {
-            return $this->storage->get($this->paths['pem']);
+            return $this->storage->get($this->files['pem']);
         } catch (\Exception $e) {
-            return '';
+            return null;
         }
     }
 
@@ -78,18 +76,51 @@ class Certificate
      */
     public function getPemCertificatePath()
     {
-        return $this->storage->getAdapter()->applyPathPrefix($this->paths['pem']);
+        return $this->storage->getAdapter()->applyPathPrefix($this->files['pem']);
+    }
+
+
+    /**
+     * Convert p12 to pem.
+     *
+     * @return string|null
+     * @throws \RuntimeException
+     */
+    public function convertP12toPem()
+    {
+        $pem = '';
+        $p12 = $this->getP12Certificate();
+
+        if (empty($p12)) {
+            return null;
+        }
+
+        if (! openssl_pkcs12_read($p12, $certificate, $this->getPassword())) {
+            throw new \RuntimeException("Certificate or password is invalid.");
+        }
+
+        if (isset($certificate['cert'])) {
+            openssl_x509_export($certificate['cert'], $cert);
+            $pem .= $cert;
+        }
+
+        if (isset($certificate['pkey'])) {
+            openssl_pkey_export($certificate['pkey'], $pkey, null);
+            $pem .= $pkey;
+        }
+
+        return $pem;
     }
 
     /**
      * Set certificates filenames.
      *
-     * @param  array $paths
+     * @param  array $files
      * @return $this
      */
-    public function setPaths(array $paths)
+    public function setFiles(array $files)
     {
-        $this->paths = $paths;
+        $this->files = $files;
 
         return $this;
     }

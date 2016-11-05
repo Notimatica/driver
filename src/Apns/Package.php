@@ -2,13 +2,14 @@
 
 namespace Notimatica\Driver\Apns;
 
-use League\Flysystem\Filesystem;
-use Notimatica\Driver\NotimaticaProject;
+use League\Flysystem\FilesystemInterface;
 
 class Package
 {
-    const PACKAGE_FILENAME = 'safari-package.zip';
-
+    /**
+     * @var string
+     */
+    protected $name;
     /**
      * @var array
      */
@@ -17,14 +18,7 @@ class Package
     /**
      * @var array
      */
-    protected $icons = [
-        'icon_16x16.png',
-        'icon_16x16@2x.png',
-        'icon_32x32.png',
-        'icon_32x32@2x.png',
-        'icon_128x128.png',
-        'icon_128x128@2x.png',
-    ];
+    protected $icons;
 
     /**
      * @var Certificate
@@ -42,19 +36,23 @@ class Package
     protected $zip;
 
     /**
-     * @var Filesystem
+     * @var FilesystemInterface
      */
     private $storage;
 
     /**
      * Create a new Package.
      *
+     * @param string $name
+     * @param array $icons
      * @param array $website
      * @param Certificate $certificate
-     * @param Filesystem $storage
+     * @param FilesystemInterface $storage
      */
-    public function __construct($website, Certificate $certificate, Filesystem $storage)
+    public function __construct($name, $icons, $website, Certificate $certificate, FilesystemInterface $storage)
     {
+        $this->name = $name;
+        $this->icons = $icons;
         $this->website = $website;
         $this->certificate = $certificate;
         $this->storage = $storage;
@@ -62,14 +60,12 @@ class Package
 
     /**
      * Generate zip package.
+     *
+     * @return string|null
      */
     public function generate()
     {
-        $packagePath = $this->storage->getAdapter()->applyPathPrefix(static::PACKAGE_FILENAME);
-
-        if ($this->storage->has(static::PACKAGE_FILENAME)) {
-            return $packagePath;
-        }
+        $packagePath = $this->getPackagePath();
 
         $this->zip = new \ZipArchive();
         if ($this->zip->open($packagePath, \ZipArchive::CREATE) !== true) {
@@ -82,6 +78,16 @@ class Package
         $this->addSignature();
 
         return $this->zip->close() ? $packagePath : false;
+    }
+
+    /**
+     * Generates path to package file.
+     *
+     * @return string
+     */
+    public function getPackagePath()
+    {
+        return $this->storage->getAdapter()->applyPathPrefix($this->name);
     }
 
     /**
