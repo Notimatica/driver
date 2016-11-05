@@ -16,7 +16,7 @@ return [
             'concurrent_requests' => 100,
         ],
         \Notimatica\Driver\Providers\Safari::NAME => [
-            'safari_web_id' => '',
+            'website_push_id' => '',
             'subscribe_url' => '/subscribe/safari',
             'service_url' => 'ssl://gateway.push.apple.com:2195',
             'assets' => [
@@ -29,6 +29,7 @@ return [
                 ],
                 'icons' => [
                     'icon_16'   => 'icon_16x16.png',
+                    'icon_16x2' => 'icon_16x16@2x.png', // same as icon_32
                     'icon_32'   => 'icon_32x32.png',
                     'icon_64'   => 'icon_32x32@2x.png',
                     'icon_128'  => 'icon_128x128.png',
@@ -39,6 +40,7 @@ return [
     ],
     'payload' => [
         'subscriber_lifetime' => 86400,
-        'url' => ''
+        'retrieve_url' => '/payload',
+        'click_url' => '/click'
     ]
 ];

@@ -12,9 +12,12 @@ use Notimatica\Driver\Contracts\Subscriber;
 use Notimatica\Driver\Driver;
 use Notimatica\Driver\Events\NotificationFailed;
 use Notimatica\Driver\Events\NotificationSent;
+use Notimatica\Driver\Support\MakesUrls;
 
 class Safari extends AbstractProvider
 {
+    use MakesUrls;
+
     const NAME = 'safari';
 
     /**
@@ -43,10 +46,8 @@ class Safari extends AbstractProvider
      */
     public function send(Notification $notification, array $subscribers)
     {
-        $certificate = new Certificate($this->config['assets']['certificates'], $this->storage);
-        $stream  = new Streamer($certificate, $this->config['service_url']);
-        $payload = new Payload($notification);
-        $payload = json_encode($payload);
+        $stream  = new Streamer($this->makeCertificate(), $this->config['service_url']);
+        $payload = json_encode(new Payload($notification));
 
         foreach ($this->prepareRequests($subscribers, $payload) as $message) {
             try {
@@ -86,30 +87,46 @@ class Safari extends AbstractProvider
      */
     public function connectionPackage($extra = [])
     {
-        $certificate = new Certificate($this->config['assets']['certificates'], $this->storage);
-        $website = [
-            'websiteName' => $this->project->getName(),
-            'websitePushID' => $this->config['website_push_id'],
-            'allowedDomains' => [$this->project->getBaseUrl()],
-            'urlFormatString' => "{$this->project->getBaseUrl()}/go/%@",
-            'webServiceURL' => $this->project->getBaseUrl() . '/' . $this->config['subscribe_url'],
-        ];
-
-        array_merge($website, $extra);
-
-        $package = new Package(
-            $this->config['assets']['package'],
-            $this->config['assets']['icons'],
-            $website, $certificate, $this->storage
-        );
-
         // Hack to not to rebuild package each time.
-        $path = $package->getPackagePath();
+        $path = $this->storage->getAdapter()->applyPathPrefix($this->config['assets']['package']);
         if ($this->storage->has($path)) {
             return $path;
         }
 
-        return $package->generate();
+        $website = array_merge([
+            'websiteName' => $this->project->getName(),
+            'websitePushID' => $this->config['website_push_id'],
+            'allowedDomains' => [$this->project->getBaseUrl()],
+            'urlFormatString' => $this->makeClickUrl() . '/%@',
+            'webServiceURL' => $this->formatUrlFromConfig($this->config['subscribe_url']),
+        ], $extra);
+
+        return $this->makePackage($website)->generate();
+    }
+
+    /**
+     * Makes certificate object.
+     *
+     * @return Certificate
+     */
+    public function makeCertificate()
+    {
+        return new Certificate($this->config['assets']['certificates'], $this->storage);
+    }
+
+    /**
+     * Make package object.
+     *
+     * @param  array $website
+     * @return Package
+     */
+    public function makePackage(array $website)
+    {
+        return new Package(
+            $this->config['assets']['package'],
+            $this->config['assets']['icons'],
+            $website, $this->makeCertificate(), $this->storage
+        );
     }
 
     /**

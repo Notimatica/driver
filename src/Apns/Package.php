@@ -61,7 +61,7 @@ class Package
     /**
      * Generate zip package.
      *
-     * @return string|null
+     * @return string|bool
      */
     public function generate()
     {

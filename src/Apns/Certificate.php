@@ -35,7 +35,7 @@ class Certificate
     public function getP12Certificate()
     {
         try {
-            return $this->storage->get($this->files['p12']);
+            return $this->storage->read($this->files['p12']);
         } catch (\Exception $e) {
             return null;
         }
@@ -49,7 +49,7 @@ class Certificate
     public function getPassword()
     {
         try {
-            return $this->storage->get($this->files['password']);
+            return $this->storage->read($this->files['password']);
         } catch (\Exception $e) {
             return null;
         }
@@ -63,7 +63,7 @@ class Certificate
     public function getPemCertificate()
     {
         try {
-            return $this->storage->get($this->files['pem']);
+            return $this->storage->read($this->files['pem']);
         } catch (\Exception $e) {
             return null;
         }

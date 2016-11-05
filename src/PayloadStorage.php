@@ -5,9 +5,12 @@ namespace Notimatica\Driver;
 use Notimatica\Driver\Contracts\Notification;
 use Notimatica\Driver\Contracts\Project;
 use Notimatica\Driver\Contracts\Subscriber;
+use Notimatica\Driver\Support\MakesUrls;
 
 abstract class PayloadStorage
 {
+    use MakesUrls;
+
     /**
      * @var Project
      */
@@ -61,46 +64,6 @@ abstract class PayloadStorage
     }
 
     /**
-     * Make onclick url redirect.
-     *
-     * @return string
-     */
-    public function makeClickUrl($notification)
-    {
-        $config = $this->project->getConfig();
-
-        if (empty($config['payload']['click_url'])) {
-            throw new \RuntimeException('Payload url is invalid');
-        }
-
-        $url = $config['payload']['click_url'];
-
-        return ! $this->isAbsoluteUrl($url)
-            ? $this->project->getBaseUrl() . '/' . $url
-            : $url;
-    }
-
-    /**
-     * Make notification icon.
-     *
-     * @return string
-     */
-    protected function makeIcon($notification)
-    {
-        $config = $this->project->getConfig();
-
-        if (empty($config['icon_path'])) {
-            return null;
-        }
-
-        $icon = $config['icon_path'];
-
-        return ! $this->isAbsoluteUrl($icon)
-            ? $this->project->getBaseUrl() . '/' . $icon
-            : $icon;
-    }
-
-    /**
      * Make notification tag.
      *
      * @return string
@@ -108,16 +71,5 @@ abstract class PayloadStorage
     protected function makeTag($notification)
     {
         return md5($this->project->getBaseUrl());
-    }
-
-    /**
-     * Check if url is absolute
-     *
-     * @param  string $url
-     * @return bool
-     */
-    protected function isAbsoluteUrl($url)
-    {
-        return (bool) preg_match('/^https:\/\//', $url);
     }
 }
