@@ -119,7 +119,7 @@ class NotimaticaProject implements \Notimatica\Driver\Contracts\Project
             foreach ($this->config['providers'] as $name => $options) {
                 try {
                     $this->providers[$name] = $providersFactory->make($name, $options)->setProject($this);
-                } catch (\RuntimeException $e) {}
+                } catch (\LogicException $e) {}
             }
         }
     }

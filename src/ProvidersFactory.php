@@ -2,8 +2,11 @@
 
 namespace Notimatica\Driver;
 
+use GuzzleHttp\Client;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
+use Notimatica\Driver\Apns\Certificate;
+use Notimatica\Driver\Apns\Streamer;
 use Notimatica\Driver\Providers\AbstractProvider;
 use Notimatica\Driver\Providers\Chrome;
 use Notimatica\Driver\Providers\Firefox;
@@ -31,34 +34,20 @@ class ProvidersFactory
      * Resolve provider from it's name.
      *
      * @param  string $name
-     * @param  array $options
+     * @param  array $config
      * @return AbstractProvider
-     * @throws \RuntimeException For unsupported provider
+     * @throws \LogicException For unsupported provider
      */
-    public function make($name, array $options = [])
+    public function make($name, array $config = [])
     {
-        $provider = $this->resolveExtends($name, $options);
+        $provider = $this->resolveExtends($name, $config);
 
         if (is_null($provider)) {
-            switch ($name) {
-                case Chrome::NAME:
-                    $provider = new Chrome($options);
-                    break;
-                case Firefox::NAME:
-                    $provider = new Firefox($options);
-                    break;
-                case Safari::NAME:
-                    $storage  = new Filesystem(new Local($options['assets']['root']));
-                    $provider = new Safari($options);
-                    $provider->setStorage($storage);
-                    break;
-                default:
-                    throw new \RuntimeException("Unsupported provider '$name'");
-            }
+            $provider = $this->resolveProvider($name, $config);
         }
 
         if (! $provider->isEnabled()) {
-            throw new \RuntimeException("Provider '$name' is disabled");
+            throw new \LogicException("Provider '$name' is disabled");
         }
 
         return $provider;
@@ -78,5 +67,72 @@ class ProvidersFactory
         }
 
         return call_user_func(static::$resolvers[$name], $options);
+    }
+
+    /**
+     * Make Chrome provider.
+     *
+     * @param  array $options
+     * @return Chrome
+     */
+    protected function makeChromeProvider(array $options)
+    {
+        $client = new Client([
+            'timeout' => isset($config['timeout']) ? $config['timeout'] : Chrome::DEFAULT_TIMEOUT,
+        ]);
+
+        return new Chrome($options, $client);
+    }
+
+    /**
+     * Make Firefox provider.
+     *
+     * @param  array $config
+     * @return Firefox
+     */
+    protected function makeFirefoxProvider(array $config)
+    {
+        $client = new Client([
+            'timeout' => isset($config['timeout']) ? $config['timeout'] : Firefox::DEFAULT_TIMEOUT,
+        ]);
+
+        return new Firefox($config, $client);
+    }
+
+    /**
+     * Make Safari provider.
+     *
+     * @param  array $config
+     * @return Safari
+     */
+    protected function makeSafariProvider(array $config)
+    {
+        $storage = new Filesystem(new Local($config['assets']['root']));
+        $certificate = new Certificate($config['assets']['certificates'], $storage);
+        $streamer = new Streamer($certificate, $config['service_url']);
+
+        return new Safari($config, $storage, $streamer);
+    }
+
+    /**
+     * Resolve supported provider.
+     *
+     * @param  string $name
+     * @param  array $config
+     * @return AbstractProvider
+     * @throws \InvalidArgumentException
+     */
+    protected function resolveProvider($name, array $config)
+    {
+        switch ($name) {
+            case Chrome::NAME:
+                return $this->makeChromeProvider($config);
+            case Firefox::NAME:
+                return $this->makeFirefoxProvider($config);
+            case Safari::NAME:
+                return $this->makeSafariProvider($config);
+            default:
+                throw new \InvalidArgumentException("Unsupported provider '$name'");
+        }
     }
 }

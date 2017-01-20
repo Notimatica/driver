@@ -3,6 +3,7 @@
 namespace Notimatica\Driver\Providers;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Notimatica\Driver\Contracts\Notification;
@@ -10,37 +11,11 @@ use Notimatica\Driver\Contracts\Subscriber;
 use Notimatica\Driver\Driver;
 use Notimatica\Driver\Events\NotificationFailed;
 use Notimatica\Driver\Events\NotificationSent;
+use Notimatica\Driver\Support\ProviderWithHttpClient;
 
-class Firefox extends AbstractProvider
+class Firefox extends ProviderWithHttpClient
 {
     const NAME = 'firefox';
-    const DEFAULT_TTL = 2419200;
-    const DEFAULT_TIMEOUT = 30;
-
-    /**
-     * @var array
-     */
-    protected static $headers = [
-        'Content-Type' => 'application/json',
-    ];
-
-    /**
-     * Init Browser.
-     *
-     * @param array $config
-     */
-    protected static function initBrowser(array $config)
-    {
-        if (static::$browser) {
-            return;
-        }
-
-        static::$browser = new Client([
-            'timeout' => isset($config['timeout']) ? $config['timeout'] : static::DEFAULT_TIMEOUT,
-        ]);
-
-        static::$headers['TTL'] = isset($config['ttl']) ? $config['ttl'] : static::DEFAULT_TTL;
-    }
 
     /**
      * Split endpoints for batch requests.
@@ -61,8 +36,6 @@ class Firefox extends AbstractProvider
      */
     public function send(Notification $notification, array $subscribers)
     {
-        static::initBrowser($this->config);
-
         $this->flush(
             $subscribers,
             function (Response $response) use ($notification) {
@@ -97,7 +70,7 @@ class Firefox extends AbstractProvider
      */
     protected function prepareRequests($subscribers, $payload = null)
     {
-        $headers = static::$headers;
+        $headers = $this->headers;
         $content = '';
 
         foreach ($subscribers as $subscriber) {

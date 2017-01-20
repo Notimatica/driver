@@ -30,7 +30,7 @@ class ProvidersFactoryTest extends TestCase
     {
         $factory = new ProvidersFactory();
 
-        $this->setExpectedException(\RuntimeException::class, "Unsupported provider '111'");
+        $this->setExpectedException(\LogicException::class, "Unsupported provider '111'");
         $factory->make('111', []);
     }
 
@@ -67,7 +67,7 @@ class ProvidersFactoryTest extends TestCase
             return $mock;
         });
 
-        $this->setExpectedException(\RuntimeException::class);
+        $this->setExpectedException(\LogicException::class);
         $factory->make('foo', ['foo' => 'bar']);
     }
 }

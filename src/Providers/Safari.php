@@ -24,18 +24,17 @@ class Safari extends AbstractProvider
      * @var FilesystemInterface
      */
     protected $storage;
-
     /**
-     * Set files storage.
-     *
-     * @param  FilesystemInterface $filesStorage
-     * @return $this
+     * @var Streamer
      */
-    public function setStorage(FilesystemInterface $filesStorage)
-    {
-        $this->storage = $filesStorage;
+    protected $streamer;
 
-        return $this;
+    public function __construct(array $config, FilesystemInterface $filesStorage, Streamer $streamer)
+    {
+        parent::__construct($config);
+
+        $this->storage = $filesStorage;
+        $this->streamer = $streamer;
     }
 
     /**
@@ -46,19 +45,18 @@ class Safari extends AbstractProvider
      */
     public function send(Notification $notification, array $subscribers)
     {
-        $stream  = new Streamer($this->makeCertificate(), $this->config['service_url']);
         $payload = json_encode(new Payload($notification));
 
         foreach ($this->prepareRequests($subscribers, $payload) as $message) {
             try {
-                $stream->write($message);
+                $this->streamer->write($message);
                 Driver::emit(new NotificationSent($notification));
             } catch (\Exception $e) {
                 Driver::emit(new NotificationFailed($notification));
             }
         }
 
-        $stream->close();
+        $this->streamer->close();
     }
 
     /**
@@ -105,16 +103,6 @@ class Safari extends AbstractProvider
     }
 
     /**
-     * Makes certificate object.
-     *
-     * @return Certificate
-     */
-    public function makeCertificate()
-    {
-        return new Certificate($this->config['assets']['certificates'], $this->storage);
-    }
-
-    /**
      * Make package object.
      *
      * @param  array $website
@@ -125,7 +113,7 @@ class Safari extends AbstractProvider
         return new Package(
             $this->config['assets']['package'],
             $this->config['assets']['icons'],
-            $website, $this->makeCertificate(), $this->storage
+            $website, $this->streamer->getCertificate(), $this->storage
         );
     }
 
@@ -140,12 +128,42 @@ class Safari extends AbstractProvider
     }
 
     /**
-     * Return storage.
+     * File storage getter.
      *
      * @return FilesystemInterface
      */
     public function getStorage()
     {
         return $this->storage;
+    }
+
+    /**
+     * File storage setter.
+     *
+     * @param  FilesystemInterface $filesStorage
+     */
+    public function setStorage(FilesystemInterface $filesStorage)
+    {
+        $this->storage = $filesStorage;
+    }
+
+    /**
+     * Streamer getter.
+     *
+     * @return Streamer
+     */
+    public function getStreamer()
+    {
+        return $this->streamer;
+    }
+
+    /**
+     * Streamer setter.
+     *
+     * @param Streamer $streamer
+     */
+    public function setStreamer($streamer)
+    {
+        $this->streamer = $streamer;
     }
 }

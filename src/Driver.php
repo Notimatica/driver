@@ -234,24 +234,13 @@ class Driver
     }
 
     /**
-     * Get project instance.
+     * Project getter.
      *
      * @return Project
      */
     public function getProject()
     {
         return $this->project;
-    }
-
-    /**
-     * @param  Project $project
-     * @return Driver
-     */
-    public function setProject($project)
-    {
-        $this->project = $project;
-
-        return $this;
     }
 
     /**

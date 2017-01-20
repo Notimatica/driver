@@ -19,17 +19,17 @@ class Streamer
     /**
      * @var Resource
      */
-    private $apnsResource;
+    protected $apnsResource;
 
     /**
      * @var int
      */
-    private $error;
+    protected $error;
 
     /**
      * @var string
      */
-    private $errorString;
+    protected $errorString;
 
     /**
      * Construct.
@@ -44,7 +44,7 @@ class Streamer
     }
 
     /**
-     * Writes a binary message to apns.
+     * Writes a binary message to APNS.
      *
      * @param  string $binaryMessage
      * @return int Returns the number of bytes written, or FALSE on error.
@@ -125,5 +125,25 @@ class Streamer
     public function __destruct()
     {
         $this->close();
+    }
+
+    /**
+     * Certificate getter.
+     *
+     * @return Certificate
+     */
+    public function getCertificate()
+    {
+        return $this->certificate;
+    }
+
+    /**
+     * Certificate setter.
+     *
+     * @param Certificate $certificate
+     */
+    public function setCertificate($certificate)
+    {
+        $this->certificate = $certificate;
     }
 }

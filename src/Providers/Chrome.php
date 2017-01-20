@@ -2,7 +2,7 @@
 
 namespace Notimatica\Driver\Providers;
 
-use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Notimatica\Driver\Contracts\Notification;
@@ -10,37 +10,23 @@ use Notimatica\Driver\Contracts\Subscriber;
 use Notimatica\Driver\Driver;
 use Notimatica\Driver\Events\NotificationFailed;
 use Notimatica\Driver\Events\NotificationSent;
+use Notimatica\Driver\Support\ProviderWithHttpClient;
 
-class Chrome extends AbstractProvider
+class Chrome extends ProviderWithHttpClient
 {
-    const NAME            = 'chrome';
-    const DEFAULT_TTL     = 2419200;
-    const DEFAULT_TIMEOUT = 30;
+    const NAME = 'chrome';
 
     /**
-     * @var array
-     */
-    protected static $headers = [
-        'Content-Type' => 'application/json',
-    ];
-
-    /**
-     * Init Browser.
+     * Chrome constructor.
      *
      * @param array $config
+     * @param ClientInterface $client
      */
-    protected static function initBrowser(array $config)
+    public function __construct(array $config, ClientInterface $client)
     {
-        if (static::$browser) {
-            return;
-        }
+        parent::__construct($config, $client);
 
-        static::$browser = new Client([
-            'timeout' => isset($config['timeout']) ? $config['timeout'] : static::DEFAULT_TIMEOUT,
-        ]);
-
-        static::$headers['TTL'] = isset($config['ttl']) ? $config['ttl'] : static::DEFAULT_TTL;
-        static::$headers['Authorization'] = 'key=' . $config['api_key'];
+        $this->headers['Authorization'] = 'key=' . $config['api_key'];
     }
 
     /**
@@ -62,7 +48,6 @@ class Chrome extends AbstractProvider
      */
     public function send(Notification $notification, array $subscribers)
     {
-        static::initBrowser($this->config);
         $total = count($subscribers);
 
         $this->flush(
@@ -102,7 +87,7 @@ class Chrome extends AbstractProvider
     protected function prepareRequests($subscribers, $payload = null)
     {
         $url = $this->config['service_url'];
-        $headers = static::$headers;
+        $headers = $this->headers;
 
         foreach ($this->batch($subscribers) as $index => $chunk) {
             $content = $this->getRequestContent($chunk);

@@ -76,7 +76,7 @@ class DriverTest extends TestCase
         $driver = $this->makeDriver();
         $this->assertInstanceOf(NotimaticaProject::class, $driver->getProject());
 
-        $driver->setProject(\Mockery::namedMock('FooProject', NotimaticaProject::class)->makePartial());
+        $driver->from(\Mockery::namedMock('FooProject', NotimaticaProject::class)->makePartial());
         $this->assertInstanceOf('FooProject', $driver->getProject());
     }
 }
