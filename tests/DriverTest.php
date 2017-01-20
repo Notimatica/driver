@@ -7,6 +7,9 @@ use League\Event\Event;
 use Notimatica\Driver\Contracts\Subscriber;
 use Notimatica\Driver\Driver;
 use Notimatica\Driver\NotimaticaProject;
+use Notimatica\Driver\Providers\Chrome;
+use Notimatica\Driver\Providers\Firefox;
+use Notimatica\Driver\Providers\Safari;
 
 class DriverTest extends TestCase
 {
@@ -32,6 +35,37 @@ class DriverTest extends TestCase
         Driver::emit('foo-event', 'bar');
 
         Driver::off('foo-event');
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_boot_connected_providers()
+    {
+        $driver = $this->makeDriver();
+
+        $this->assertTrue($driver->providerConnected(Chrome::NAME));
+        $this->assertTrue($driver->providerConnected(Firefox::NAME));
+        $this->assertTrue($driver->providerConnected(Safari::NAME));
+        $this->assertFalse($driver->providerConnected('123'));
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_return_providers()
+    {
+        $driver = $this->makeDriver();
+
+        $this->assertInternalType('array', $driver->getProviders());
+        $this->assertCount(3, $driver->getProviders());
+
+        $this->assertInstanceOf(Chrome::class, $driver->getProvider(Chrome::NAME));
+        $this->assertInstanceOf(Firefox::class, $driver->getProvider(Firefox::NAME));
+        $this->assertInstanceOf(Safari::class, $driver->getProvider(Safari::NAME));
+
+        $this->setExpectedException(\InvalidArgumentException::class, "Unsupported provider 'foo'");
+        $this->assertInstanceOf(Safari::class, $driver->getProvider('foo'));
     }
 
     /**

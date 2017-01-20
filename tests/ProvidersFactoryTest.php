@@ -2,6 +2,7 @@
 
 namespace Notimatica\Driver\Tests;
 
+use Notimatica\Driver\Contracts\Project;
 use Notimatica\Driver\Providers\AbstractProvider;
 use Notimatica\Driver\Providers\Chrome;
 use Notimatica\Driver\Providers\Firefox;
@@ -16,7 +17,7 @@ class ProvidersFactoryTest extends TestCase
     public function it_can_make_default_providers()
     {
         $config = $this->getConfig('providers');
-        $factory = new ProvidersFactory();
+        $factory = new ProvidersFactory($this->makeProject());
 
         $this->assertInstanceOf(Chrome::class, $factory->make(Chrome::NAME, $config[Chrome::NAME]));
         $this->assertInstanceOf(Firefox::class, $factory->make(Firefox::NAME, $config[Firefox::NAME]));
@@ -28,7 +29,7 @@ class ProvidersFactoryTest extends TestCase
      */
     public function it_will_throw_unsupported_provider_exception()
     {
-        $factory = new ProvidersFactory();
+        $factory = new ProvidersFactory($this->makeProject());
 
         $this->setExpectedException(\LogicException::class, "Unsupported provider '111'");
         $factory->make('111', []);
@@ -39,11 +40,9 @@ class ProvidersFactoryTest extends TestCase
      */
     public function it_can_be_extended()
     {
-        $factory = new ProvidersFactory();
+        $factory = new ProvidersFactory($this->makeProject());
 
-        ProvidersFactory::extend('foo', function ($options) {
-            $this->assertArrayHasKey('foo', $options);
-
+        ProvidersFactory::extend('foo', function (Project $project) {
             $mock = \Mockery::namedMock('FooProvider', AbstractProvider::class)->makePartial();
             $mock->shouldReceive('isEnabled')->andReturn(true);
             return $mock;
@@ -57,17 +56,15 @@ class ProvidersFactoryTest extends TestCase
      */
     public function it_can_check_if_provider_is_enabled()
     {
-        $factory = new ProvidersFactory();
+        $factory = new ProvidersFactory($this->makeProject());
 
-        ProvidersFactory::extend('foo', function ($options) {
-            $this->assertArrayHasKey('foo', $options);
-
+        ProvidersFactory::extend('foo', function (Project $project) {
             $mock = \Mockery::namedMock('FooProvider', AbstractProvider::class)->makePartial();
             $mock->shouldReceive('isEnabled')->andReturn(false);
             return $mock;
         });
 
         $this->setExpectedException(\LogicException::class);
-        $factory->make('foo', ['foo' => 'bar']);
+        $factory->make('foo');
     }
 }

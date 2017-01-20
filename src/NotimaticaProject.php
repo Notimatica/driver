@@ -2,8 +2,6 @@
 
 namespace Notimatica\Driver;
 
-use Notimatica\Driver\Providers\AbstractProvider;
-
 class NotimaticaProject implements \Notimatica\Driver\Contracts\Project
 {
     /**
@@ -18,10 +16,6 @@ class NotimaticaProject implements \Notimatica\Driver\Contracts\Project
      * @var array
      */
     public $config = [];
-    /**
-     * @var AbstractProvider[]
-     */
-    public $providers;
 
     /**
      * Create a new Project.
@@ -68,59 +62,25 @@ class NotimaticaProject implements \Notimatica\Driver\Contracts\Project
     }
 
     /**
-     * Make providers.
+     * Returns project's providers.
      *
-     * @return AbstractProvider[]
+     * @return array
      */
     public function getProviders()
     {
-        if (is_null($this->providers)) {
-            $this->buildProviders();
-        }
-
-        return $this->providers;
+        return ! empty($this->config['providers']) && is_array($this->config['providers'])
+            ? array_keys($this->config['providers'])
+            : [];
     }
 
     /**
-     * Fetch connected provider.
+     * Returns project's providers.
      *
      * @param  string $name
-     * @return AbstractProvider
-     * @throws \RuntimeException If provider isn't connected
+     * @return array
      */
-    public function getProvider($name)
+    public function getProviderConfig($name)
     {
-        if (! $this->providerConnected($name)) {
-            throw new \RuntimeException("Unsupported provider '{$name}'");
-        }
-
-        return $this->providers[$name];
-    }
-
-    /**
-     * Check if project has required provider.
-     *
-     * @param  string $name
-     * @return bool
-     */
-    public function providerConnected($name)
-    {
-        return array_key_exists($name, $this->getProviders());
-    }
-
-    /**
-     * Build providers objects.
-     */
-    public function buildProviders()
-    {
-        $providersFactory = new ProvidersFactory();
-
-        if (! empty($this->config['providers']) && is_array($this->config['providers'])) {
-            foreach ($this->config['providers'] as $name => $options) {
-                try {
-                    $this->providers[$name] = $providersFactory->make($name, $options)->setProject($this);
-                } catch (\LogicException $e) {}
-            }
-        }
+        return $this->config['providers'][$name];
     }
 }

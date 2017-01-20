@@ -166,10 +166,9 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     protected function makeProvider($provider)
     {
         $config = $this->getConfig('providers');
-        $factory = new ProvidersFactory();
+        $factory = new ProvidersFactory($this->makeProject());
 
-        return $factory->make($provider, $config[$provider])
-            ->setProject($this->makeProject());
+        return $factory->make($provider, $config[$provider]);
     }
 
     /**

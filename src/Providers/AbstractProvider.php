@@ -13,35 +13,23 @@ abstract class AbstractProvider
     const NAME = null;
 
     /**
-     * @var Project
-     */
-    protected $project;
-    /**
      * @var array
      */
     protected $config = [];
+    /**
+     * @var Project
+     */
+    protected $project;
 
     /**
      * Create a new Provider.
      *
-     * @param array $config
+     * @param Project $project
      */
-    public function __construct(array $config = [])
-    {
-        $this->config = $config;
-    }
-
-    /**
-     * Set project.
-     *
-     * @param  Project $project
-     * @return $this
-     */
-    public function setProject(Project $project)
+    public function __construct(Project $project)
     {
         $this->project = $project;
-
-        return $this;
+        $this->config = $this->project->getProviderConfig(static::NAME);
     }
 
     /**

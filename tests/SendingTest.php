@@ -52,8 +52,7 @@ class SendingTest extends TestCase
     public function test_notification_send_to_safari()
     {
         $driver = $this->makeDriver();
-        $project = $driver->getProject();
-        $provider = $project->getProvider('safari');
+        $provider = $driver->getProvider('safari');
 
         $streamer = m::mock(Streamer::class);
         $streamer->shouldReceive('write');
@@ -71,8 +70,7 @@ class SendingTest extends TestCase
     protected function makeDriverWithMockClients($provider)
     {
         $driver = $this->makeDriver();
-        $project = $driver->getProject();
-        $provider = $project->getProvider($provider);
+        $provider = $driver->getProvider($provider);
 
         // Create a mock and queue two responses.
         $mock = new MockHandler([

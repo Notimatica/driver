@@ -4,6 +4,7 @@ namespace Notimatica\Driver\Support;
 
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Pool;
+use Notimatica\Driver\Contracts\Project;
 use Notimatica\Driver\Providers\AbstractProvider;
 
 abstract class ProviderWithHttpClient extends AbstractProvider
@@ -25,15 +26,15 @@ abstract class ProviderWithHttpClient extends AbstractProvider
     /**
      * ProviderWithHttpClient constructor.
      *
-     * @param array $config
+     * @param Project $project
      * @param ClientInterface $client
      */
-    public function __construct(array $config, ClientInterface $client)
+    public function __construct(Project $project, ClientInterface $client)
     {
-        parent::__construct($config);
+        parent::__construct($project);
 
         $this->client = $client;
-        $this->headers['TTL'] = isset($config['ttl']) ? $config['ttl'] : static::DEFAULT_TTL;
+        $this->headers['TTL'] = isset($this->config['ttl']) ? $this->config['ttl'] : static::DEFAULT_TTL;
     }
 
     /**

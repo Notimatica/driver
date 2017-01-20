@@ -8,6 +8,7 @@ use Notimatica\Driver\Apns\Package;
 use Notimatica\Driver\Apns\Payload;
 use Notimatica\Driver\Apns\Streamer;
 use Notimatica\Driver\Contracts\Notification;
+use Notimatica\Driver\Contracts\Project;
 use Notimatica\Driver\Contracts\Subscriber;
 use Notimatica\Driver\Driver;
 use Notimatica\Driver\Events\NotificationFailed;
@@ -21,6 +22,10 @@ class Safari extends AbstractProvider
     const NAME = 'safari';
 
     /**
+     * @var Project
+     */
+    protected $project;
+    /**
      * @var FilesystemInterface
      */
     protected $storage;
@@ -29,9 +34,16 @@ class Safari extends AbstractProvider
      */
     protected $streamer;
 
-    public function __construct(array $config, FilesystemInterface $filesStorage, Streamer $streamer)
+    /**
+     * Safari constructor.
+     *
+     * @param Project $project
+     * @param FilesystemInterface $filesStorage
+     * @param Streamer $streamer
+     */
+    public function __construct(Project $project, FilesystemInterface $filesStorage, Streamer $streamer)
     {
-        parent::__construct($config);
+        parent::__construct($project);
 
         $this->storage = $filesStorage;
         $this->streamer = $streamer;

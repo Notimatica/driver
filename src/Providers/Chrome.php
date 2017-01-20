@@ -6,6 +6,7 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Notimatica\Driver\Contracts\Notification;
+use Notimatica\Driver\Contracts\Project;
 use Notimatica\Driver\Contracts\Subscriber;
 use Notimatica\Driver\Driver;
 use Notimatica\Driver\Events\NotificationFailed;
@@ -17,16 +18,21 @@ class Chrome extends ProviderWithHttpClient
     const NAME = 'chrome';
 
     /**
+     * @var Project
+     */
+    protected $project;
+
+    /**
      * Chrome constructor.
      *
-     * @param array $config
+     * @param Project $project
      * @param ClientInterface $client
      */
-    public function __construct(array $config, ClientInterface $client)
+    public function __construct(Project $project, ClientInterface $client)
     {
-        parent::__construct($config, $client);
+        parent::__construct($project, $client);
 
-        $this->headers['Authorization'] = 'key=' . $config['api_key'];
+        $this->headers['Authorization'] = 'key=' . $this->config['api_key'];
     }
 
     /**

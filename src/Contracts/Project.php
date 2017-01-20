@@ -2,8 +2,6 @@
 
 namespace Notimatica\Driver\Contracts;
 
-use Notimatica\Driver\Providers\AbstractProvider;
-
 interface Project
 {
     /**
@@ -28,26 +26,17 @@ interface Project
     public function getConfig();
 
     /**
-     * Make providers.
+     * Returns project's providers.
      *
-     * @return AbstractProvider[]
+     * @return array
      */
     public function getProviders();
 
     /**
-     * Fetch connected provider.
+     * Returns project's providers.
      *
      * @param  string $name
-     * @return AbstractProvider
-     * @throws \RuntimeException If provider isn't connected
+     * @return array
      */
-    public function getProvider($name);
-
-    /**
-     * Check if project has required provider.
-     *
-     * @param  string $name
-     * @return bool
-     */
-    public function providerConnected($name);
+    public function getProviderConfig($name);
 }

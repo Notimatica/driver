@@ -22,6 +22,10 @@ class Driver
      */
     protected $project;
     /**
+     * @var AbstractProvider[]
+     */
+    protected $providers;
+    /**
      * @var Notification
      */
     protected $notification;
@@ -131,6 +135,61 @@ class Driver
     }
 
     /**
+     * Make providers.
+     *
+     * @return AbstractProvider[]
+     */
+    public function getProviders()
+    {
+        if (is_null($this->providers)) {
+            $this->buildProviders();
+        }
+
+        return $this->providers;
+    }
+
+    /**
+     * Fetch connected provider.
+     *
+     * @param  string $name
+     * @return AbstractProvider
+     * @throws \InvalidArgumentException If provider isn't connected
+     */
+    public function getProvider($name)
+    {
+        if (! $this->providerConnected($name)) {
+            throw new \InvalidArgumentException("Unsupported provider '{$name}'");
+        }
+
+        return $this->providers[$name];
+    }
+
+    /**
+     * Check if project has required provider.
+     *
+     * @param  string $name
+     * @return bool
+     */
+    public function providerConnected($name)
+    {
+        return array_key_exists($name, $this->getProviders());
+    }
+
+    /**
+     * Build providers objects.
+     */
+    public function buildProviders()
+    {
+        $providersFactory = new ProvidersFactory($this->getProject());
+
+        foreach ($this->getProject()->getProviders() as $name) {
+            try {
+                $this->providers[$name] = $providersFactory->make($name);
+            } catch (\LogicException $e) {}
+        }
+    }
+
+    /**
      * Send notification.
      */
     public function flush()
@@ -147,9 +206,7 @@ class Driver
 
         foreach ($partials as $provider => $subscribers) {
             try {
-                $this->project
-                    ->getProvider($provider)
-                    ->send($this->notification, $subscribers);
+                $this->getProvider($provider)->send($this->notification, $subscribers);
             } catch (\RuntimeException $e) {
                 static::emit('flush.exception', $e);
             }
@@ -186,18 +243,6 @@ class Driver
     }
 
     /**
-     * Cast provider.
-     *
-     * @param  string $name
-     * @return AbstractProvider
-     * @throws \RuntimeException
-     */
-    public function provider($name)
-    {
-        return $this->project->getProvider($name);
-    }
-
-    /**
      * Prepare notifications.
      * Split subscribers by their providers and prepare payload.
      *
@@ -211,7 +256,7 @@ class Driver
         foreach ($subscribers as $subscriber) {
             $provider = $subscriber->getProvider();
 
-            if (! $this->project->providerConnected($provider)) {
+            if (! $this->providerConnected($provider)) {
                 continue;
             }
 
@@ -225,7 +270,7 @@ class Driver
                 $this->payloadStorage->assignPayloadToSubscriber(
                     $this->notification,
                     $subscriber,
-                    $this->project->getConfig()['payload']['subscriber_lifetime']
+                    $this->getProject()->getConfig()['payload']['subscriber_lifetime']
                 );
             }
         }
