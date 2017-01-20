@@ -27,7 +27,7 @@ class FirefoxTest extends TestCase
         $this->assertInstanceOf(Request::class, $requests[2]);
     }
 
-    private function prepareSubscribers()
+    protected function prepareSubscribers()
     {
         return [
             $this->makeFirefoxSubscriber('111', '123123'),

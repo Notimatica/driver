@@ -44,9 +44,30 @@ class ProvidersFactoryTest extends TestCase
         ProvidersFactory::extend('foo', function ($options) {
             $this->assertArrayHasKey('foo', $options);
 
-            return \Mockery::namedMock('FooProvider', AbstractProvider::class)->makePartial();
+            $mock = \Mockery::namedMock('FooProvider', AbstractProvider::class)->makePartial();
+            $mock->shouldReceive('isEnabled')->andReturn(true);
+            return $mock;
         });
 
         $this->assertInstanceOf('FooProvider', $factory->make('foo', ['foo' => 'bar']));
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_check_if_provider_is_enabled()
+    {
+        $factory = new ProvidersFactory();
+
+        ProvidersFactory::extend('foo', function ($options) {
+            $this->assertArrayHasKey('foo', $options);
+
+            $mock = \Mockery::namedMock('FooProvider', AbstractProvider::class)->makePartial();
+            $mock->shouldReceive('isEnabled')->andReturn(false);
+            return $mock;
+        });
+
+        $this->setExpectedException(\RuntimeException::class);
+        $factory->make('foo', ['foo' => 'bar']);
     }
 }

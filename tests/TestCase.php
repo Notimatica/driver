@@ -2,6 +2,7 @@
 
 namespace Notimatica\Driver\Tests;
 
+use Mockery as m;
 use Notimatica\Driver\Contracts\Notification;
 use Notimatica\Driver\Contracts\NotificationRepository;
 use Notimatica\Driver\Contracts\Subscriber;
@@ -26,10 +27,22 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->config = require __DIR__ . '/../src/config/notimatica.php';
+        $this->config = require __DIR__ . '/../config/notimatica.php';
         $this->setConfig(
-            'providers.' . Safari::NAME . '.storage_root',
+            'providers.' . Safari::NAME . '.assets.root',
             __DIR__ . '/tmp/safari_push_data'
+        );
+        $this->setConfig(
+            'providers.' . Safari::NAME . '.website_push_id',
+            '111222333'
+        );
+        $this->setConfig(
+            'providers.' . Chrome::NAME . '.sender_id',
+            '111222333'
+        );
+        $this->setConfig(
+            'providers.' . Chrome::NAME . '.api_key',
+            'foobar'
         );
 
         parent::setUp();
@@ -174,7 +187,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
      */
     protected function makePayloadStorage()
     {
-        $storage = \Mockery::mock(PayloadStorage::class)->makePartial();
+        $storage = m::mock(PayloadStorage::class)->makePartial();
         $storage->shouldReceive('getPayloadForSubscriber')->andReturn($this->makeNotification());
         $storage->shouldReceive('assignPayloadToSubscriber');
 
@@ -186,7 +199,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
      */
     protected function makeNotificationRepository()
     {
-        $repository = \Mockery::mock(NotificationRepository::class);
+        $repository = m::mock(NotificationRepository::class);
         $repository->shouldReceive('all')->andReturn([
             $this->makeNotification()
         ]);
@@ -202,7 +215,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
      */
     protected function makeNotification()
     {
-        $notification = \Mockery::mock(Notification::class);
+        $notification = m::mock(Notification::class);
         $notification->shouldReceive('getId')->andReturn('05350612-c647-41e0-acbe-8d3eb0a19855');
         $notification->shouldReceive('getTitle')->andReturn('Test title');
         $notification->shouldReceive('getBody')->andReturn('Notification body with long long long long long long long long long long long body to trim.');
@@ -215,7 +228,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
      */
     protected function makeSubscriberRepository()
     {
-        $repository = \Mockery::mock(SubscriberRepository::class);
+        $repository = m::mock(SubscriberRepository::class);
         $repository->shouldReceive('all')->andReturn([
             $this->makeChromeSubscriber(),
             $this->makeFirefoxSubscriber(),
@@ -235,7 +248,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
      */
     protected function makeChromeSubscriber($id = '2', $token = '111122223333qqqwweee')
     {
-        $subscriber = \Mockery::mock(Subscriber::class);
+        $subscriber = m::mock(Subscriber::class);
         $subscriber->shouldReceive('getId')->andReturn($id);
         $subscriber->shouldReceive('getProvider')->andReturn(Chrome::NAME);
         $subscriber->shouldReceive('getToken')->andReturn($token);
@@ -250,7 +263,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
      */
     protected function makeFirefoxSubscriber($id = 'a060f737-a83a-465a-bcc9-26e5c4a2cea4', $token = '111122223333qqqwweee')
     {
-        $subscriber = \Mockery::mock(Subscriber::class);
+        $subscriber = m::mock(Subscriber::class);
         $subscriber->shouldReceive('getId')->andReturn($id);
         $subscriber->shouldReceive('getProvider')->andReturn(Firefox::NAME);
         $subscriber->shouldReceive('getToken')->andReturn($token);
@@ -265,7 +278,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
      */
     protected function makeSafariSubscriber($id = 'a060f737-a83a-465a-bcc9-26e5c4a2cea4', $token = '111122223333444aaabbb')
     {
-        $subscriber = \Mockery::mock(Subscriber::class);
+        $subscriber = m::mock(Subscriber::class);
         $subscriber->shouldReceive('getId')->andReturn($id);
         $subscriber->shouldReceive('getProvider')->andReturn(Safari::NAME);
         $subscriber->shouldReceive('getToken')->andReturn($token);

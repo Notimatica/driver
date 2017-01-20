@@ -58,7 +58,7 @@ class ProvidersFactory
         }
 
         if (! $provider->isEnabled()) {
-            throw new \RuntimeException("Unsupported provider '$name'");
+            throw new \RuntimeException("Provider '$name' is disabled");
         }
 
         return $provider;

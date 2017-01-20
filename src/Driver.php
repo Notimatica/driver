@@ -40,11 +40,11 @@ class Driver
     /**
      * @var NotificationRepository
      */
-    private $notificationRepository;
+    protected $notificationRepository;
     /**
      * @var SubscriberRepository
      */
-    private $subscriberRepository;
+    protected $subscriberRepository;
 
     /**
      * Create a new Driver.
@@ -79,6 +79,16 @@ class Driver
     {
         $this->bootEvents();
         $this->bootListeners();
+    }
+
+    /**
+     * Boot event listeners.
+     */
+    protected function bootListeners()
+    {
+        if (! is_null($this->statisticsStorage)) {
+            static::$events->useListenerProvider($this->statisticsStorage);
+        }
     }
 
     /**
@@ -234,13 +244,14 @@ class Driver
     }
 
     /**
-     * Boot event listeners.
+     * @param  Project $project
+     * @return Driver
      */
-    protected function bootListeners()
+    public function setProject($project)
     {
-        if (! is_null($this->statisticsStorage)) {
-            static::$events->useListenerProvider($this->statisticsStorage);
-        }
+        $this->project = $project;
+
+        return $this;
     }
 
     /**
