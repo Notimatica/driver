@@ -137,7 +137,9 @@ class Driver
 
         foreach ($partials as $provider => $subscribers) {
             try {
-                $this->provider($provider)->send($this->notification, $subscribers);
+                $this->project
+                    ->getProvider($provider)
+                    ->send($this->notification, $subscribers);
             } catch (\RuntimeException $e) {
                 static::emit('flush.exception', $e);
             }
@@ -147,14 +149,11 @@ class Driver
     /**
      * Get payload for the subscriber.
      *
-     * @param  string $subscriberToken
+     * @param  Subscriber $subscriber
      * @return Notification
      */
-    public function retrievePayload($subscriberToken)
+    public function retrievePayload(Subscriber $subscriber)
     {
-        if (empty($subscriberToken)) throw new \RuntimeException('Empty subscriber token.');
-
-        $subscriber     = $this->subscriberRepository->findByToken($subscriberToken);
         $payload        = $this->payloadStorage->getPayloadForSubscriber($subscriber);
         $notification   = $this->notificationRepository->find($payload['id']);
 
@@ -166,15 +165,11 @@ class Driver
     /**
      * Process notification click.
      *
-     * @param  int|string $notificationId
+     * @param  Notification $notification
      * @return string
      */
-    public function processClicked($notificationId)
+    public function processClicked(Notification $notification)
     {
-        if (empty($notificationId)) throw new \RuntimeException('Empty notification id.');
-
-        $notification = $this->notificationRepository->find($notificationId);
-
         static::emit(new NotificationClicked($notification));
 
         return $notification->getUrl();

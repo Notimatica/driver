@@ -33,11 +33,11 @@ trait MakesUrls
     {
         $config = $this->project->getConfig();
 
-        if (empty($config['icon_path'])) {
+        if (empty($config['icon'])) {
             return null;
         }
 
-        return $this->formatUrlFromConfig($config['icon_path']);
+        return $this->formatUrlFromConfig($config['icon']);
     }
 
     /**
@@ -49,7 +49,7 @@ trait MakesUrls
     protected function formatUrlFromConfig($url)
     {
         return ! $this->isAbsoluteUrl($url)
-            ? $this->project->getBaseUrl() . '/' . $url
+            ? trim($this->project->getBaseUrl(), '/') . '/' . $url
             : $url;
     }
 
@@ -61,6 +61,6 @@ trait MakesUrls
      */
     protected function isAbsoluteUrl($url)
     {
-        return (bool) preg_match('/^https:\/\//', $url);
+        return (bool) preg_match('/^https?:\/\//', $url);
     }
 }

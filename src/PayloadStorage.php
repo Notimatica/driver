@@ -31,6 +31,7 @@ abstract class PayloadStorage
      *
      * @param  Subscriber $subscriber
      * @return Notification
+     * @throws \RuntimeException
      */
     abstract public function getPayloadForSubscriber(Subscriber $subscriber);
 
@@ -57,7 +58,6 @@ abstract class PayloadStorage
             'id' => $notification->getId(),
             'title' => $notification->getTitle(),
             'body' => $notification->getBody(),
-            'url' => $this->makeClickUrl($notification),
             'icon' => $this->makeIcon($notification),
             'tag' => $this->makeTag($notification),
         ];
