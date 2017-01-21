@@ -189,7 +189,7 @@ class Driver
         foreach ($partials as $provider => $subscribers) {
             try {
                 $this->getProvider($provider)->send($this->notification, $subscribers);
-            } catch (\RuntimeException $e) {
+            } catch (\Exception $e) {
                 static::emit('flush.exception', $e);
             }
         }

@@ -54,6 +54,10 @@ class ProvidersFactory
      */
     public function make($name)
     {
+        if (! array_key_exists($name, $this->project->getProviders())) {
+            throw new \InvalidArgumentException("Unsupported provider '{$name}'");
+        }
+
         $provider = $this->resolveExtends($name);
 
         if (is_null($provider)) {
@@ -61,7 +65,7 @@ class ProvidersFactory
         }
 
         if (! $provider->isEnabled()) {
-            throw new \LogicException("Provider '$name' is disabled");
+            throw new \LogicException("Provider '$name' is not enabled");
         }
 
         return $provider;
