@@ -83,6 +83,10 @@ class NotimaticaProject implements Project
      */
     public function getProviderConfig($name)
     {
+        if (! array_key_exists($name, $this->getProviders())) {
+            throw new \InvalidArgumentException("Unsupported provider '{$name}'");
+        }
+
         return $this->config['providers'][$name];
     }
 }

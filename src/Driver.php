@@ -122,20 +122,6 @@ class Driver
     }
 
     /**
-     * Make providers.
-     *
-     * @return AbstractProvider[]
-     */
-    public function getProviders()
-    {
-        if (is_null($this->providers)) {
-            $this->buildProviders();
-        }
-
-        return $this->providers;
-    }
-
-    /**
      * Fetch connected provider.
      *
      * @param  string $name
