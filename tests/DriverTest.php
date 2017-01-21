@@ -2,10 +2,7 @@
 
 namespace Notimatica\Driver\Tests;
 
-use League\Event\Emitter;
-use League\Event\Event;
 use Notimatica\Driver\Contracts\Subscriber;
-use Notimatica\Driver\Driver;
 use Notimatica\Driver\NotimaticaProject;
 use Notimatica\Driver\Providers\Chrome;
 use Notimatica\Driver\Providers\Firefox;
@@ -13,46 +10,7 @@ use Notimatica\Driver\Providers\Safari;
 
 class DriverTest extends TestCase
 {
-    /**
-     * @test
-     */
-    public function it_can_boot_events()
-    {
-        $driver = $this->makeDriver();
-
-        $this->assertInstanceOf(Emitter::class, $driver::$emitter);
-    }
-
-    /**
-     * @test
-     */
-    public function it_can_listen_events()
-    {
-        Driver::on('foo-event', function (Event $event, $var) {
-            $this->assertEquals('bar', $var);
-        });
-
-        Driver::emit('foo-event', 'bar');
-
-        Driver::off('foo-event');
-    }
-
-    /**
-     * @test
-     */
-    public function it_can_boot_connected_providers()
-    {
-        $driver = $this->makeDriver();
-
-        $this->assertTrue($driver->providerConnected(Chrome::NAME));
-        $this->assertTrue($driver->providerConnected(Firefox::NAME));
-        $this->assertTrue($driver->providerConnected(Safari::NAME));
-        $this->assertFalse($driver->providerConnected('123'));
-    }
-
-    /**
-     * @test
-     */
+    /** @test */
     public function it_can_return_providers()
     {
         $driver = $this->makeDriver();
@@ -65,9 +23,7 @@ class DriverTest extends TestCase
         $this->assertInstanceOf(Safari::class, $driver->getProvider('foo'));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_can_split_subscribers()
     {
         $driver = $this->makeDriver();
@@ -89,9 +45,7 @@ class DriverTest extends TestCase
         $this->assertCount(1, $partials);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_validates_notification_input()
     {
         $driver = $this->makeDriver();
@@ -99,9 +53,7 @@ class DriverTest extends TestCase
         $driver->to([])->flush();
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_can_set_and_return_project()
     {
         $driver = $this->makeDriver();

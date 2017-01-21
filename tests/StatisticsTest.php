@@ -7,9 +7,7 @@ use Notimatica\Driver\Statistics;
 
 class StatisticsTest extends TestCase
 {
-    /**
-     * @test
-     */
+    /** @test */
     public function it_can_be_created()
     {
         $statistics = new Statistics($this->makeNotificationRepository());

@@ -18,7 +18,11 @@ class ProvidersFactory
     /**
      * @var \Closure[]
      */
-    protected static $resolvers;
+    protected static $resolvers = [];
+    /**
+     * @var AbstractProvider[]
+     */
+    protected static $providers = [];
     /**
      * @var Project
      */
@@ -54,14 +58,26 @@ class ProvidersFactory
      */
     public function make($name)
     {
-        if (! array_key_exists($name, $this->project->getProviders())) {
-            throw new \InvalidArgumentException("Unsupported provider '{$name}'");
+        if (! array_key_exists($name, static::$providers)) {
+            static::$providers[$name] = $this->resolveProvider($name);
         }
 
+        return static::$providers[$name];
+    }
+
+    /**
+     * Resolve provider object.
+     *
+     * @param  $name
+     * @return AbstractProvider
+     * @throws \LogicException
+     */
+    public function resolveProvider($name)
+    {
         $provider = $this->resolveExtends($name);
 
         if (is_null($provider)) {
-            $provider = $this->resolveProvider($name);
+            $provider = $this->resolveDefaultProvider($name);
         }
 
         if (! $provider->isEnabled()) {
@@ -79,11 +95,27 @@ class ProvidersFactory
      */
     protected function resolveExtends($name)
     {
-        if (empty(static::$resolvers[$name])) {
-            return;
+        if (array_key_exists($name, static::$resolvers) && is_callable(static::$resolvers[$name])) {
+            return call_user_func(static::$resolvers[$name], $this->project);
+        }
+    }
+
+    /**
+     * Resolve supported provider.
+     *
+     * @param  string $name
+     * @return AbstractProvider
+     * @throws \InvalidArgumentException
+     */
+    protected function resolveDefaultProvider($name)
+    {
+        $method = 'make' . ucfirst($name) . 'Provider';
+
+        if (! method_exists($this, $method)) {
+            throw new \InvalidArgumentException("Unsupported provider '$name'");
         }
 
-        return call_user_func(static::$resolvers[$name], $this->project);
+        return call_user_func([$this, $method]);
     }
 
     /**
@@ -132,22 +164,5 @@ class ProvidersFactory
         $streamer = new Streamer($certificate, $config['service_url']);
 
         return new Safari($this->project, $storage, $streamer);
-    }
-
-    /**
-     * Resolve supported provider.
-     *
-     * @param  string $name
-     * @return AbstractProvider
-     * @throws \InvalidArgumentException
-     */
-    protected function resolveProvider($name)
-    {
-        $method = 'make' . ucfirst($name) . 'Provider';
-        if (method_exists($this, $method)) {
-            return call_user_func([$this, $method]);
-        }
-
-        throw new \InvalidArgumentException("Unsupported provider '$name'");
     }
 }

@@ -4,6 +4,7 @@ namespace Notimatica\Driver\Providers;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Pool;
+use League\Event\EmitterInterface;
 use Notimatica\Driver\Contracts\Notification;
 use Notimatica\Driver\Contracts\Subscriber;
 use Notimatica\Driver\Contracts\Project;
@@ -17,9 +18,18 @@ abstract class AbstractProvider
      */
     protected $config = [];
     /**
+     * @var array
+     */
+    protected $emitter = [];
+    /**
      * @var Project
      */
     protected $project;
+
+    /**
+     * @var EmitterInterface
+     */
+    protected static $dispatcher;
 
     /**
      * Create a new Provider.
@@ -55,4 +65,14 @@ abstract class AbstractProvider
      * @return \Generator
      */
     abstract protected function prepareRequests($subscribers, $payload = null);
+
+    /**
+     * Events dispatcher setter.
+     *
+     * @param EmitterInterface $dispatcher
+     */
+    public static function setEventDispatcher(EmitterInterface $dispatcher)
+    {
+        static::$dispatcher = $dispatcher;
+    }
 }

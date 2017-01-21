@@ -11,60 +11,63 @@ use Notimatica\Driver\ProvidersFactory;
 
 class ProvidersFactoryTest extends TestCase
 {
-    /**
-     * @test
-     */
+    /** @test */
     public function it_can_make_default_providers()
     {
-        $config = $this->getConfig('providers');
         $factory = new ProvidersFactory($this->makeProject());
 
-        $this->assertInstanceOf(Chrome::class, $factory->make(Chrome::NAME, $config[Chrome::NAME]));
-        $this->assertInstanceOf(Firefox::class, $factory->make(Firefox::NAME, $config[Firefox::NAME]));
-        $this->assertInstanceOf(Safari::class, $factory->make(Safari::NAME, $config[Safari::NAME]));
+        $this->assertInstanceOf(Chrome::class, $factory->resolveProvider(Chrome::NAME));
+        $this->assertInstanceOf(Firefox::class, $factory->resolveProvider(Firefox::NAME));
+        $this->assertInstanceOf(Safari::class, $factory->resolveProvider(Safari::NAME));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
+    public function it_can_save_already_resolved_providers()
+    {
+        $factory = new ProvidersFactory($this->makeProject());
+        $provider1 = $factory->make(Chrome::NAME);
+        $provider2 = $factory->make(Chrome::NAME);
+
+        $this->assertSame($provider1, $provider2);
+    }
+
+    /** @test */
     public function it_will_throw_unsupported_provider_exception()
     {
         $factory = new ProvidersFactory($this->makeProject());
 
         $this->setExpectedException(\LogicException::class, "Unsupported provider '111'");
-        $factory->make('111', []);
+        $factory->resolveProvider('111');
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_can_be_extended()
     {
         $factory = new ProvidersFactory($this->makeProject());
 
         ProvidersFactory::extend('foo', function (Project $project) {
-            $mock = \Mockery::namedMock('FooProvider', AbstractProvider::class)->makePartial();
+            $mock = \Mockery::namedMock('FooProvider', AbstractProvider::class);
             $mock->shouldReceive('isEnabled')->andReturn(true);
+
             return $mock;
         });
 
-        $this->assertInstanceOf('FooProvider', $factory->make('foo', ['foo' => 'bar']));
+        $this->assertInstanceOf('FooProvider', $factory->resolveProvider('foo'));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_can_check_if_provider_is_enabled()
     {
         $factory = new ProvidersFactory($this->makeProject());
 
         ProvidersFactory::extend('foo', function (Project $project) {
-            $mock = \Mockery::namedMock('FooProvider', AbstractProvider::class)->makePartial();
+            $mock = \Mockery::namedMock('FooProvider', AbstractProvider::class);
             $mock->shouldReceive('isEnabled')->andReturn(false);
+
             return $mock;
         });
 
-        $this->setExpectedException(\LogicException::class);
-        $factory->make('foo');
+        $this->setExpectedException(\LogicException::class, "Provider 'foo' is not enabled");
+        $factory->resolveProvider('foo');
     }
 }

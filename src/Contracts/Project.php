@@ -39,4 +39,12 @@ interface Project
      * @return array
      */
     public function getProviderConfig($name);
+
+    /**
+     * Check if project has this provider.
+     *
+     * @param  string $name
+     * @return bool
+     */
+    public function hasProvider($name);
 }

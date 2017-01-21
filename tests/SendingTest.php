@@ -15,9 +15,7 @@ use Notimatica\Driver\Providers\Firefox;
 
 class SendingTest extends TestCase
 {
-    /**
-     * @test
-     */
+    /** @test */
     public function test_notification_send_to_chrome()
     {
         $driver = $this->makeDriverWithMockClients(Chrome::NAME);
@@ -31,9 +29,7 @@ class SendingTest extends TestCase
         ])->flush();
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function test_notification_send_to_firefox()
     {
         $driver = $this->makeDriverWithMockClients(Firefox::NAME);
@@ -46,9 +42,7 @@ class SendingTest extends TestCase
         ])->flush();
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function test_notification_send_to_safari()
     {
         $driver = $this->makeDriver();

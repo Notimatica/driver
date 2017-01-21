@@ -2,6 +2,7 @@
 
 namespace Notimatica\Driver\Tests;
 
+use League\Event\Emitter;
 use Mockery as m;
 use Notimatica\Driver\Contracts\Notification;
 use Notimatica\Driver\Contracts\NotificationRepository;
@@ -120,7 +121,6 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
      *
      * @param  string $key
      * @param  mixed $value
-     * @return mixed
      */
     protected function setConfig($key, $value)
     {
@@ -129,7 +129,9 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
             $config = &$config[$step];
         }
 
-        return $config = $value;
+        $config = $value;
+
+        unset($config);
     }
 
     /**
@@ -151,6 +153,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     {
         return new Driver(
             $this->makeProject(),
+            new Emitter(),
             $this->makeNotificationRepository(),
             $this->makeSubscriberRepository(),
             $this->makePayloadStorage(),
@@ -166,10 +169,9 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
      */
     protected function makeProvider($provider)
     {
-        $config = $this->getConfig('providers');
         $factory = new ProvidersFactory($this->makeProject());
 
-        return $factory->make($provider, $config[$provider]);
+        return $factory->resolveProvider($provider);
     }
 
     /**

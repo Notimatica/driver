@@ -2,6 +2,7 @@
 
 namespace Notimatica\Driver;
 
+use League\Event\EmitterInterface;
 use Notimatica\Driver\Contracts\Notification;
 use Notimatica\Driver\Contracts\NotificationRepository;
 use Notimatica\Driver\Contracts\Project;
@@ -11,20 +12,16 @@ use Notimatica\Driver\Events\NotificationClicked;
 use Notimatica\Driver\Events\NotificationDelivered;
 use Notimatica\Driver\PayloadStorage as PayloadStorageContract;
 use Notimatica\Driver\Providers\AbstractProvider;
-use Notimatica\Driver\Support\EventsEmitter;
+use Notimatica\Driver\Support\EventsDispatcher;
 
 class Driver
 {
-    use EventsEmitter;
+    use EventsDispatcher;
 
     /**
      * @var Project
      */
     protected $project;
-    /**
-     * @var AbstractProvider[]
-     */
-    protected $providers = [];
     /**
      * @var Notification
      */
@@ -54,6 +51,7 @@ class Driver
      * Create a new Driver.
      *
      * @param Project $project
+     * @param EmitterInterface $dispatcher
      * @param NotificationRepository $notificationRepository
      * @param SubscriberRepository $subscriberRepository
      * @param PayloadStorage $payloadStorage
@@ -61,6 +59,7 @@ class Driver
      */
     public function __construct(
         Project $project,
+        EmitterInterface $dispatcher,
         NotificationRepository $notificationRepository = null,
         SubscriberRepository $subscriberRepository = null,
         PayloadStorageContract $payloadStorage = null,
@@ -68,6 +67,7 @@ class Driver
     )
     {
         $this->project = $project;
+        $this->dispatcher = $dispatcher;
         $this->notificationRepository = $notificationRepository;
         $this->subscriberRepository = $subscriberRepository;
         $this->payloadStorage = $payloadStorage;
@@ -82,16 +82,17 @@ class Driver
     public function boot()
     {
         $this->bootEvents();
-        $this->bootListeners();
     }
 
     /**
      * Boot event listeners.
      */
-    protected function bootListeners()
+    protected function bootEvents()
     {
+        AbstractProvider::setEventDispatcher($this->dispatcher);
+
         if (! is_null($this->statisticsStorage)) {
-            static::$emitter->useListenerProvider($this->statisticsStorage);
+            $this->dispatcher->useListenerProvider($this->statisticsStorage);
         }
     }
 
@@ -126,49 +127,12 @@ class Driver
      *
      * @param  string $name
      * @return AbstractProvider
-     * @throws \InvalidArgumentException If provider isn't connected
      */
     public function getProvider($name)
     {
-        if (! array_key_exists($name, $this->providers)) {
-            $provider = $this->makeProvider($name);
-
-            if (is_null($provider)) {
-                throw new \InvalidArgumentException("Unsupported provider '{$name}'");
-            }
-
-            $this->providers[$name] = $provider;
-        }
-
-        return $this->providers[$name];
-    }
-
-    /**
-     * Resolve provider.
-     *
-     * @param  string $name
-     * @return AbstractProvider|null
-     */
-    protected function makeProvider($name)
-    {
         $providersFactory = new ProvidersFactory($this->getProject());
 
-        try {
-            return $providersFactory->make($name);
-        } catch (\LogicException $e) {
-            return null;
-        }
-    }
-
-    /**
-     * Check if project has required provider.
-     *
-     * @param  string $name
-     * @return bool
-     */
-    public function providerConnected($name)
-    {
-        return $this->makeProvider($name) !== null;
+        return $providersFactory->make($name);
     }
 
     /**
@@ -190,7 +154,7 @@ class Driver
             try {
                 $this->getProvider($provider)->send($this->notification, $subscribers);
             } catch (\Exception $e) {
-                static::emit('flush.exception', $e);
+                $this->dispatcher->emit('flush.exception', $e);
             }
         }
     }
@@ -206,7 +170,7 @@ class Driver
         $payload = $this->payloadStorage->getPayloadForSubscriber($subscriber);
         $notification = $this->notificationRepository->find($payload['id']);
 
-        static::emit(new NotificationDelivered($notification));
+        $this->dispatcher->emit(new NotificationDelivered($notification));
 
         return $payload;
     }
@@ -219,7 +183,7 @@ class Driver
      */
     public function processClicked(Notification $notification)
     {
-        static::emit(new NotificationClicked($notification));
+        $this->dispatcher->emit(new NotificationClicked($notification));
 
         return $notification->getUrl();
     }
@@ -232,14 +196,14 @@ class Driver
      */
     protected function splitSubscribers(array $subscribers)
     {
+        $partials = [];
         $config = $this->getProject()->getConfig();
         $payloadLifetime = $config['payload']['subscriber_lifetime'];
 
-        $partials = [];
         foreach ($subscribers as $subscriber) {
             $provider = $subscriber->getProvider();
 
-            if (! $this->providerConnected($provider)) {
+            if (! $this->getProject()->hasProvider($provider)) {
                 continue;
             }
 

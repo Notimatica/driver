@@ -62,9 +62,9 @@ class Safari extends AbstractProvider
         foreach ($this->prepareRequests($subscribers, $payload) as $message) {
             try {
                 $this->streamer->write($message);
-                Driver::emit(new NotificationSent($notification));
+                static::$dispatcher->emit(new NotificationSent($notification));
             } catch (\Exception $e) {
-                Driver::emit(new NotificationFailed($notification));
+                static::$dispatcher->emit(new NotificationFailed($notification));
             }
         }
 

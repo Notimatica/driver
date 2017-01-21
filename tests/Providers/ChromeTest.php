@@ -8,9 +8,7 @@ use Notimatica\Driver\Tests\TestCase;
 
 class ChromeTest extends TestCase
 {
-    /**
-     * @test
-     */
+    /** @test */
     public function it_can_calculate_chunk_size()
     {
         $this->setConfig('providers.' . Chrome::NAME . '.batch_chunk_size', 500);
@@ -25,9 +23,7 @@ class ChromeTest extends TestCase
         $this->assertEquals(0, $calculateChunkSize->invoke($provider, 3, 1400));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_can_generate_manifest()
     {
         $this->setConfig('providers.' . Chrome::NAME . '.sender_id', '111222333');
@@ -42,9 +38,7 @@ class ChromeTest extends TestCase
         ]));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_can_generate_request_body_for_chunk()
     {
         $provider = $this->makeProvider(Chrome::NAME);
@@ -61,9 +55,7 @@ class ChromeTest extends TestCase
         ]));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_can_create_concurrent_requests()
     {
         $this->setConfig('providers.' . Chrome::NAME . '.batch_chunk_size', 2);

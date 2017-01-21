@@ -36,17 +36,6 @@ class Chrome extends ProviderWithHttpClient
     }
 
     /**
-     * Split endpoints for batch requests.
-     *
-     * @param  array $endpoints
-     * @return array
-     */
-    protected function batch(array $endpoints)
-    {
-        return array_chunk($endpoints, (int) $this->config['batch_chunk_size']);
-    }
-
-    /**
      * Send notification.
      *
      * @param  Notification $notification
@@ -67,35 +56,49 @@ class Chrome extends ProviderWithHttpClient
                     }
 
                     if ($body->success > 0) {
-                        Driver::emit(new NotificationSent($notification, (int) $body->success));
+                        static::$dispatcher->emit(new NotificationSent($notification, (int) $body->success));
                     }
 
                     if ($body->failure > 0) {
-                        Driver::emit(new NotificationFailed($notification, (int) $body->failure));
+                        static::$dispatcher->emit(new NotificationFailed($notification, (int) $body->failure));
                     }
                 } catch (\Exception $e) {
-                    Driver::emit(new NotificationFailed($notification, $this->calculateChunkSize($index, $total)));
+                    static::$dispatcher->emit(new NotificationFailed($notification, $this->calculateChunkSize($index, $total)));
                 }
             },
             function ($reason, $index) use ($notification, $total) {
-                Driver::emit(new NotificationFailed($notification, $this->calculateChunkSize($index, $total)));
+                static::$dispatcher->emit(new NotificationFailed($notification, $this->calculateChunkSize($index, $total)));
             }
         );
     }
 
     /**
+     * Split endpoints for batch requests.
+     *
+     * @param  Subscriber[] $endpoints
+     * @param  int $chunkSize
+     * @return array
+     */
+    protected function batch(array $endpoints, $chunkSize)
+    {
+        return array_chunk($endpoints, (int) $chunkSize);
+    }
+
+    /**
      * Send request.
      *
-     * @param  array $subscribers
+     * @param  Subscriber[] $subscribers
      * @param  null $payload
      * @return \Generator
      */
     protected function prepareRequests($subscribers, $payload = null)
     {
         $url = $this->config['service_url'];
+        $chunkSize = $this->config['batch_chunk_size'];
+
         $headers = $this->headers;
 
-        foreach ($this->batch($subscribers) as $index => $chunk) {
+        foreach ($this->batch($subscribers, $chunkSize) as $index => $chunk) {
             $content = $this->getRequestContent($chunk);
             $headers['Content-Length'] = strlen($content);
 
@@ -105,7 +108,7 @@ class Chrome extends ProviderWithHttpClient
 
     /**
      * Calculate chunk size.
-     * Problem is, we don't know the latter chunk size.
+     * Problem is, we don't know the latter chunk size and we need to calculate each chunk.
      *
      * @param  int $index
      * @param  int $total

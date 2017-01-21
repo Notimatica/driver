@@ -8,9 +8,7 @@ use Notimatica\Driver\Tests\TestCase;
 
 class FirefoxTest extends TestCase
 {
-    /**
-     * @test
-     */
+    /** @test */
     public function it_can_create_concurrent_requests()
     {
         $provider = $this->makeProvider(Firefox::NAME);

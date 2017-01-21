@@ -64,6 +64,17 @@ class NotimaticaProject implements Project
     }
 
     /**
+     * Check if project has this provider.
+     *
+     * @param  string $name
+     * @return bool
+     */
+    public function hasProvider($name)
+    {
+        return in_array($name, $this->getProviders());
+    }
+
+    /**
      * Returns project's providers.
      *
      * @return array
@@ -83,10 +94,8 @@ class NotimaticaProject implements Project
      */
     public function getProviderConfig($name)
     {
-        if (! array_key_exists($name, $this->getProviders())) {
-            throw new \InvalidArgumentException("Unsupported provider '{$name}'");
-        }
-
-        return $this->config['providers'][$name];
+        return $this->hasProvider($name)
+            ? $this->config['providers'][$name]
+            : [];
     }
 }
