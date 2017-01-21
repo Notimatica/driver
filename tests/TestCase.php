@@ -216,6 +216,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         $notification->shouldReceive('getId')->andReturn('05350612-c647-41e0-acbe-8d3eb0a19855');
         $notification->shouldReceive('getTitle')->andReturn('Test title');
         $notification->shouldReceive('getBody')->andReturn('Notification body with long long long long long long long long long long long body to trim.');
+        $notification->shouldReceive('getUrl')->andReturn('https://foo.bar');
 
         return $notification;
     }
