@@ -4,13 +4,12 @@ namespace Notimatica\Driver;
 
 use League\Event\ListenerAcceptorInterface;
 use League\Event\ListenerProviderInterface;
-use Notimatica\Driver\Contracts\NotificationRepository;
 use Notimatica\Driver\Events\NotificationClicked;
 use Notimatica\Driver\Events\NotificationDelivered;
 use Notimatica\Driver\Events\NotificationFailed;
 use Notimatica\Driver\Events\NotificationSent;
 
-class Statistics implements ListenerProviderInterface
+class StatisticsHandler implements ListenerProviderInterface
 {
     /**
      * Number of sent pushes.

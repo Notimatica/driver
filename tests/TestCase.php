@@ -16,7 +16,7 @@ use Notimatica\Driver\Providers\Chrome;
 use Notimatica\Driver\Providers\Firefox;
 use Notimatica\Driver\Providers\Safari;
 use Notimatica\Driver\ProvidersFactory;
-use Notimatica\Driver\Statistics;
+use Notimatica\Driver\StatisticsHandler;
 use ReflectionClass;
 
 abstract class TestCase extends \PHPUnit_Framework_TestCase
@@ -175,11 +175,11 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return Statistics
+     * @return StatisticsHandler
      */
     protected function makeStatistics()
     {
-        return new Statistics();
+        return new StatisticsHandler();
     }
 
     /**

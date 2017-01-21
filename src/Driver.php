@@ -12,12 +12,9 @@ use Notimatica\Driver\Events\NotificationClicked;
 use Notimatica\Driver\Events\NotificationDelivered;
 use Notimatica\Driver\PayloadStorage as PayloadStorageContract;
 use Notimatica\Driver\Providers\AbstractProvider;
-use Notimatica\Driver\Support\EventsDispatcher;
 
 class Driver
 {
-    use EventsDispatcher;
-
     /**
      * @var Project
      */
@@ -31,6 +28,10 @@ class Driver
      */
     protected $subscribers;
     /**
+     * @var EmitterInterface
+     */
+    protected $dispatcher;
+    /**
      * @var NotificationRepository
      */
     protected $notificationRepository;
@@ -43,9 +44,9 @@ class Driver
      */
     protected $payloadStorage;
     /**
-     * @var Statistics
+     * @var StatisticsHandler
      */
-    protected $statisticsStorage;
+    protected $statisticsHandler;
 
     /**
      * Create a new Driver.
@@ -55,7 +56,7 @@ class Driver
      * @param NotificationRepository $notificationRepository
      * @param SubscriberRepository $subscriberRepository
      * @param PayloadStorage $payloadStorage
-     * @param Statistics $statisticsStorage
+     * @param StatisticsHandler $statisticsHandler
      */
     public function __construct(
         Project $project,
@@ -63,7 +64,7 @@ class Driver
         NotificationRepository $notificationRepository,
         SubscriberRepository $subscriberRepository,
         PayloadStorageContract $payloadStorage = null,
-        Statistics $statisticsStorage = null
+        StatisticsHandler $statisticsHandler = null
     )
     {
         $this->project = $project;
@@ -71,7 +72,7 @@ class Driver
         $this->notificationRepository = $notificationRepository;
         $this->subscriberRepository = $subscriberRepository;
         $this->payloadStorage = $payloadStorage;
-        $this->statisticsStorage = $statisticsStorage;
+        $this->statisticsHandler = $statisticsHandler;
 
         $this->boot();
     }
@@ -90,10 +91,10 @@ class Driver
      */
     protected function bootEvents()
     {
-        AbstractProvider::setEventDispatcher($this->getDispatcher());
+        AbstractProvider::setEventDispatcher($this->getEventsDispatcher());
 
-        if (! is_null($this->statisticsStorage)) {
-            $this->dispatcher->useListenerProvider($this->statisticsStorage);
+        if (! is_null($this->statisticsHandler)) {
+            $this->dispatcher->useListenerProvider($this->statisticsHandler);
         }
     }
 
@@ -163,7 +164,7 @@ class Driver
             try {
                 $this->getProvider($provider)->send($this->notification, $subscribers);
             } catch (\Exception $e) {
-                $this->getDispatcher()->emit('flush.exception', $e);
+                $this->getEventsDispatcher()->emit('flush.exception', $e);
             }
         }
     }
@@ -179,7 +180,7 @@ class Driver
         $payload = $this->payloadStorage->getPayloadForSubscriber($subscriber);
         $notification = $this->notificationRepository->find($payload['id']);
 
-        $this->getDispatcher()->emit(new NotificationDelivered($notification));
+        $this->getEventsDispatcher()->emit(new NotificationDelivered($notification));
 
         return $payload;
     }
@@ -192,7 +193,7 @@ class Driver
      */
     public function processClicked(Notification $notification)
     {
-        $this->getDispatcher()->emit(new NotificationClicked($notification));
+        $this->getEventsDispatcher()->emit(new NotificationClicked($notification));
 
         return $notification->getUrl();
     }
@@ -265,6 +266,24 @@ class Driver
     }
 
     /**
+     * Events dispatcher
+     *
+     * @return EmitterInterface
+     */
+    public function getEventsDispatcher()
+    {
+        return $this->dispatcher;
+    }
+
+    /**
+     * @param EmitterInterface $dispatcher
+     */
+    public function setEventsDispatcher(EmitterInterface $dispatcher)
+    {
+        $this->dispatcher = $dispatcher;
+    }
+
+    /**
      * NotificationRepository getter.
      *
      * @return NotificationRepository
@@ -327,20 +346,20 @@ class Driver
     /**
      * Statistics storage getter.
      *
-     * @return Statistics
+     * @return StatisticsHandler
      */
-    public function getStatisticsStorage()
+    public function getStatisticsHandler()
     {
-        return $this->statisticsStorage;
+        return $this->statisticsHandler;
     }
 
     /**
      * Statistics storage setter.
      *
-     * @param Statistics $statisticsStorage
+     * @param StatisticsHandler $statisticsHandler
      */
-    public function setStatisticsStorage(Statistics $statisticsStorage)
+    public function setStatisticsHandler(StatisticsHandler $statisticsHandler)
     {
-        $this->statisticsStorage = $statisticsStorage;
+        $this->statisticsHandler = $statisticsHandler;
     }
 }
