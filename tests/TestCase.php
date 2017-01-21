@@ -188,7 +188,6 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     protected function makePayloadStorage()
     {
         $storage = m::mock(PayloadStorage::class)->makePartial();
-        $storage->shouldReceive('getPayloadForSubscriber')->andReturn($this->makeNotification());
         $storage->shouldReceive('assignPayloadToSubscriber');
 
         return $storage;
@@ -203,9 +202,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         $repository->shouldReceive('all')->andReturn([
             $this->makeNotification()
         ]);
-        $repository->shouldReceive('find')->andReturn($this->makeNotification());
         $repository->shouldReceive('make')->andReturn($this->makeNotification());
-        $repository->shouldReceive('increment');
 
         return $repository;
     }
