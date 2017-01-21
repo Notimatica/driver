@@ -13,28 +13,13 @@ use Notimatica\Driver\Events\NotificationSent;
 class Statistics implements ListenerProviderInterface
 {
     /**
-     * @var NotificationRepository
-     */
-    protected $notificationRepository;
-
-    /**
-     * Create a new StatisticsStorage.
-     *
-     * @param NotificationRepository $notificationRepository
-     */
-    public function __construct(NotificationRepository $notificationRepository)
-    {
-        $this->notificationRepository = $notificationRepository;
-    }
-
-    /**
      * Number of sent pushes.
      *
      * @param  NotificationSent $event
      */
     public function sent(NotificationSent $event)
     {
-        $this->notificationRepository->increment($event->notification, 'sent', $event->number);
+        $event->notification->wasSent($event->number);
     }
 
     /**
@@ -44,7 +29,7 @@ class Statistics implements ListenerProviderInterface
      */
     public function delivered(NotificationDelivered $event)
     {
-        $this->notificationRepository->increment($event->notification, 'delivered', $event->number);
+        $event->notification->wasDelivered($event->number);
     }
 
     /**
@@ -54,7 +39,7 @@ class Statistics implements ListenerProviderInterface
      */
     public function clicked(NotificationClicked $event)
     {
-        $this->notificationRepository->increment($event->notification, 'clicked', $event->number);
+        $event->notification->wasClicked($event->number);
     }
 
     /**
@@ -64,7 +49,7 @@ class Statistics implements ListenerProviderInterface
      */
     public function failed(NotificationFailed $event)
     {
-        $this->notificationRepository->increment($event->notification, 'failed', $event->number);
+        $event->notification->wasFailed($event->number);
     }
 
     /**

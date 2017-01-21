@@ -51,6 +51,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     protected function tearDown()
     {
         $this->config = null;
+        \Mockery::close();
 
         parent::tearDown();
     }
@@ -176,9 +177,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
      */
     protected function makeStatistics()
     {
-        $storage = new Statistics($this->makeNotificationRepository());
-
-        return $storage;
+        return new Statistics();
     }
 
     /**

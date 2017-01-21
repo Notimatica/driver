@@ -20,7 +20,7 @@ class DriverTest extends TestCase
     {
         $driver = $this->makeDriver();
 
-        $this->assertInstanceOf(Emitter::class, $driver::$events);
+        $this->assertInstanceOf(Emitter::class, $driver::$emitter);
     }
 
     /**
@@ -56,9 +56,6 @@ class DriverTest extends TestCase
     public function it_can_return_providers()
     {
         $driver = $this->makeDriver();
-
-        $this->assertInternalType('array', $driver->getProviders());
-        $this->assertCount(3, $driver->getProviders());
 
         $this->assertInstanceOf(Chrome::class, $driver->getProvider(Chrome::NAME));
         $this->assertInstanceOf(Firefox::class, $driver->getProvider(Firefox::NAME));
@@ -110,7 +107,7 @@ class DriverTest extends TestCase
         $driver = $this->makeDriver();
         $this->assertInstanceOf(NotimaticaProject::class, $driver->getProject());
 
-        $driver->from(\Mockery::namedMock('FooProject', NotimaticaProject::class)->makePartial());
+        $driver->setProject(\Mockery::namedMock('FooProject', NotimaticaProject::class)->makePartial());
         $this->assertInstanceOf('FooProject', $driver->getProject());
     }
 }

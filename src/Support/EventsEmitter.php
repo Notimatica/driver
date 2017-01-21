@@ -11,14 +11,14 @@ trait EventsEmitter
     /**
      * @var Emitter
      */
-    public static $events;
+    public static $emitter;
 
     /**
      * Boot events emitter.
      */
     public function bootEvents()
     {
-        static::$events = new Emitter();
+        static::$emitter = new Emitter();
     }
 
     /**
@@ -28,7 +28,7 @@ trait EventsEmitter
      */
     public static function emit()
     {
-        return call_user_func_array([static::$events, 'emit'], func_get_args());
+        return call_user_func_array([static::$emitter, 'emit'], func_get_args());
     }
 
     /**
@@ -40,7 +40,7 @@ trait EventsEmitter
      */
     public static function on($event, $listener)
     {
-        return static::$events->addListener($event, $listener);
+        return static::$emitter->addListener($event, $listener);
     }
 
     /**
@@ -50,6 +50,14 @@ trait EventsEmitter
      */
     public static function off($event)
     {
-        static::$events->removeAllListeners($event);
+        static::$emitter->removeAllListeners($event);
+    }
+
+    /**
+     * @param Emitter $events
+     */
+    public static function setEmitter(Emitter $events)
+    {
+        self::$emitter = $events;
     }
 }

@@ -24,7 +24,7 @@ class Driver
     /**
      * @var AbstractProvider[]
      */
-    protected $providers;
+    protected $providers = [];
     /**
      * @var Notification
      */
@@ -34,14 +34,6 @@ class Driver
      */
     protected $subscribers;
     /**
-     * @var PayloadStorageContract
-     */
-    protected $payloadStorage;
-    /**
-     * @var Statistics
-     */
-    protected $statisticsStorage;
-    /**
      * @var NotificationRepository
      */
     protected $notificationRepository;
@@ -49,6 +41,14 @@ class Driver
      * @var SubscriberRepository
      */
     protected $subscriberRepository;
+    /**
+     * @var PayloadStorageContract
+     */
+    protected $payloadStorage;
+    /**
+     * @var Statistics
+     */
+    protected $statisticsStorage;
 
     /**
      * Create a new Driver.
@@ -91,7 +91,7 @@ class Driver
     protected function bootListeners()
     {
         if (! is_null($this->statisticsStorage)) {
-            static::$events->useListenerProvider($this->statisticsStorage);
+            static::$emitter->useListenerProvider($this->statisticsStorage);
         }
     }
 
@@ -104,19 +104,6 @@ class Driver
     public function send(Notification $notification)
     {
         $this->notification = $notification;
-
-        return $this;
-    }
-
-    /**
-     * Set project manually.
-     *
-     * @param  Project $project
-     * @return $this
-     */
-    public function from(Project $project)
-    {
-        $this->project = $project;
 
         return $this;
     }
@@ -157,11 +144,34 @@ class Driver
      */
     public function getProvider($name)
     {
-        if (! $this->providerConnected($name)) {
-            throw new \InvalidArgumentException("Unsupported provider '{$name}'");
+        if (! array_key_exists($name, $this->providers)) {
+            $provider = $this->makeProvider($name);
+
+            if (is_null($provider)) {
+                throw new \InvalidArgumentException("Unsupported provider '{$name}'");
+            }
+
+            $this->providers[$name] = $provider;
         }
 
         return $this->providers[$name];
+    }
+
+    /**
+     * Resolve provider.
+     *
+     * @param  string $name
+     * @return AbstractProvider|null
+     */
+    protected function makeProvider($name)
+    {
+        $providersFactory = new ProvidersFactory($this->getProject());
+
+        try {
+            return $providersFactory->make($name);
+        } catch (\LogicException $e) {
+            return null;
+        }
     }
 
     /**
@@ -172,21 +182,7 @@ class Driver
      */
     public function providerConnected($name)
     {
-        return array_key_exists($name, $this->getProviders());
-    }
-
-    /**
-     * Build providers objects.
-     */
-    public function buildProviders()
-    {
-        $providersFactory = new ProvidersFactory($this->getProject());
-
-        foreach ($this->getProject()->getProviders() as $name) {
-            try {
-                $this->providers[$name] = $providersFactory->make($name);
-            } catch (\LogicException $e) {}
-        }
+        return $this->makeProvider($name) !== null;
     }
 
     /**
@@ -221,8 +217,8 @@ class Driver
      */
     public function retrievePayload(Subscriber $subscriber)
     {
-        $payload        = $this->payloadStorage->getPayloadForSubscriber($subscriber);
-        $notification   = $this->notificationRepository->find($payload['id']);
+        $payload = $this->payloadStorage->getPayloadForSubscriber($subscriber);
+        $notification = $this->notificationRepository->find($payload['id']);
 
         static::emit(new NotificationDelivered($notification));
 
@@ -243,7 +239,6 @@ class Driver
     }
 
     /**
-     * Prepare notifications.
      * Split subscribers by their providers and prepare payload.
      *
      * @param  Subscriber[] $subscribers
@@ -251,8 +246,10 @@ class Driver
      */
     protected function splitSubscribers(array $subscribers)
     {
-        $partials = [];
+        $config = $this->getProject()->getConfig();
+        $payloadLifetime = $config['payload']['subscriber_lifetime'];
 
+        $partials = [];
         foreach ($subscribers as $subscriber) {
             $provider = $subscriber->getProvider();
 
@@ -270,7 +267,7 @@ class Driver
                 $this->payloadStorage->assignPayloadToSubscriber(
                     $this->notification,
                     $subscriber,
-                    $this->getProject()->getConfig()['payload']['subscriber_lifetime']
+                    $payloadLifetime
                 );
             }
         }
@@ -289,6 +286,16 @@ class Driver
     }
 
     /**
+     * Project setter.
+     *
+     * @param  Project $project
+     */
+    public function setProject(Project $project)
+    {
+        $this->project = $project;
+    }
+
+    /**
      * Helper to return default package config.
      *
      * @return array
@@ -296,5 +303,85 @@ class Driver
     public static function getConfig()
     {
         return require(__DIR__ . '/../config/notimatica.php');
+    }
+
+    /**
+     * NotificationRepository getter.
+     *
+     * @return NotificationRepository
+     */
+    public function getNotificationRepository()
+    {
+        return $this->notificationRepository;
+    }
+
+    /**
+     * NotificationRepository setter.
+     *
+     * @param NotificationRepository $notificationRepository
+     */
+    public function setNotificationRepository(NotificationRepository $notificationRepository)
+    {
+        $this->notificationRepository = $notificationRepository;
+    }
+
+    /**
+     * SubscriberRepository getter.
+     *
+     * @return SubscriberRepository
+     */
+    public function getSubscriberRepository()
+    {
+        return $this->subscriberRepository;
+    }
+
+    /**
+     * SubscriberRepository setter.
+     *
+     * @param SubscriberRepository $subscriberRepository
+     */
+    public function setSubscriberRepository(SubscriberRepository $subscriberRepository)
+    {
+        $this->subscriberRepository = $subscriberRepository;
+    }
+
+    /**
+     * PayloadStorage getter.
+     *
+     * @return PayloadStorage
+     */
+    public function getPayloadStorage()
+    {
+        return $this->payloadStorage;
+    }
+
+    /**
+     * PayloadStorage setter.
+     *
+     * @param PayloadStorage $payloadStorage
+     */
+    public function setPayloadStorage(PayloadStorage $payloadStorage)
+    {
+        $this->payloadStorage = $payloadStorage;
+    }
+
+    /**
+     * Statistics storage getter.
+     *
+     * @return Statistics
+     */
+    public function getStatisticsStorage()
+    {
+        return $this->statisticsStorage;
+    }
+
+    /**
+     * Statistics storage setter.
+     *
+     * @param Statistics $statisticsStorage
+     */
+    public function setStatisticsStorage(Statistics $statisticsStorage)
+    {
+        $this->statisticsStorage = $statisticsStorage;
     }
 }

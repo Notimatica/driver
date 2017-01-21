@@ -60,18 +60,18 @@ class Chrome extends ProviderWithHttpClient
             $subscribers,
             function (Response $response, $index) use ($notification, $total) {
                 try {
-                    $response = json_decode($response->getBody());
+                    $body = json_decode($response->getBody());
 
                     if (json_last_error() !== JSON_ERROR_NONE) {
                         throw new \Exception();
                     }
 
-                    if ($response->success > 0) {
-                        Driver::emit(new NotificationSent($notification, (int) $response->success));
+                    if ($body->success > 0) {
+                        Driver::emit(new NotificationSent($notification, (int) $body->success));
                     }
 
-                    if ($response->failure > 0) {
-                        Driver::emit(new NotificationFailed($notification, (int) $response->failure));
+                    if ($body->failure > 0) {
+                        Driver::emit(new NotificationFailed($notification, (int) $body->failure));
                     }
                 } catch (\Exception $e) {
                     Driver::emit(new NotificationFailed($notification, $this->calculateChunkSize($index, $total)));

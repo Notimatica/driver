@@ -23,8 +23,8 @@ class SendingTest extends TestCase
         $driver = $this->makeDriverWithMockClients(Chrome::NAME);
 
         $notification = $this->makeNotification();
-        $notification->shouldReceive('increment')->once()->with('success', 1);
-        $notification->shouldReceive('increment')->once()->with('fail', 1);
+        $notification->shouldReceive('wasSent')->once()->with(1);
+        $notification->shouldReceive('wasFailed')->once()->with(1);
 
         $driver->send($notification)->to([
             $this->makeChromeSubscriber(),
@@ -37,9 +37,9 @@ class SendingTest extends TestCase
     public function test_notification_send_to_firefox()
     {
         $driver = $this->makeDriverWithMockClients(Firefox::NAME);
+
         $notification = $this->makeNotification();
-        $notification->shouldReceive('increment')->once()->with('success', 1);
-        $notification->shouldReceive('increment')->once()->with('fail', 1);
+        $notification->shouldReceive('wasSent')->once()->with(1);
 
         $driver->send($notification)->to([
             $this->makeFirefoxSubscriber(),
@@ -60,7 +60,7 @@ class SendingTest extends TestCase
         $provider->setStreamer($streamer);
 
         $notification = $this->makeNotification();
-        $notification->shouldReceive('increment')->once()->with('fail', 1);
+        $notification->shouldReceive('wasFailed')->once()->with(1);
 
         $driver->send($notification)->to([
             $this->makeSafariSubscriber(),
@@ -69,13 +69,16 @@ class SendingTest extends TestCase
 
     protected function makeDriverWithMockClients($provider)
     {
+        $response = $provider == 'chrome'
+            ? new Response(200, [], '{"success": 1}')
+            : new Response(201);
+
         $driver = $this->makeDriver();
         $provider = $driver->getProvider($provider);
 
         // Create a mock and queue two responses.
         $mock = new MockHandler([
-            new Response(200),
-            new RequestException("Error Communicating with Server", new Request('GET', 'test'))
+            $response,
         ]);
 
         $handler = HandlerStack::create($mock);

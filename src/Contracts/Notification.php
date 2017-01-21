@@ -36,4 +36,32 @@ interface Notification
      * Delete notification.
      */
     public function delete();
+
+    /**
+     * Increment sent value.
+     *
+     * @param $times
+     */
+    public function wasSent($times);
+
+    /**
+     * Increment delivered value.
+     *
+     * @param $times
+     */
+    public function wasDelivered($times);
+
+    /**
+     * Increment clicked value.
+     *
+     * @param $times
+     */
+    public function wasClicked($times);
+
+    /**
+     * Increment failed value.
+     *
+     * @param $times
+     */
+    public function wasFailed($times);
 }

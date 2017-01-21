@@ -2,7 +2,9 @@
 
 namespace Notimatica\Driver;
 
-class NotimaticaProject implements \Notimatica\Driver\Contracts\Project
+use Notimatica\Driver\Contracts\Project;
+
+class NotimaticaProject implements Project
 {
     /**
      * @var string
