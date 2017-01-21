@@ -13,13 +13,10 @@ class ReceiveTest extends TestCase
 
         $notification = $this->makeNotification();
         $notification->shouldReceive('wasDelivered')->once()->with(1);
-        $payload = [
-            'id' => $notification->getId(),
-            'title' => $notification->getTitle(),
-            'body' => $notification->getBody(),
-        ];
 
         $payloadStorage = $driver->getPayloadStorage();
+        $payload = $payloadStorage->makePayloadFromNotification($notification);
+
         $payloadStorage->shouldReceive('getPayloadForSubscriber')->once()->with($subscriber)->andReturn($payload);
 
         $notificationsRepository = $driver->getNotificationRepository();

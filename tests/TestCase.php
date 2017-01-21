@@ -28,7 +28,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->config = require __DIR__ . '/../config/notimatica.php';
+        $this->config = Driver::getConfig();
         $this->setConfig(
             'providers.' . Safari::NAME . '.assets.root',
             __DIR__ . '/tmp/safari_push_data'

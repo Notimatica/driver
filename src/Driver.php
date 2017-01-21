@@ -60,8 +60,8 @@ class Driver
     public function __construct(
         Project $project,
         EmitterInterface $dispatcher,
-        NotificationRepository $notificationRepository = null,
-        SubscriberRepository $subscriberRepository = null,
+        NotificationRepository $notificationRepository,
+        SubscriberRepository $subscriberRepository,
         PayloadStorageContract $payloadStorage = null,
         Statistics $statisticsStorage = null
     )
@@ -82,6 +82,7 @@ class Driver
     public function boot()
     {
         $this->bootEvents();
+        $this->bootPayloadStorage();
     }
 
     /**
@@ -89,11 +90,19 @@ class Driver
      */
     protected function bootEvents()
     {
-        AbstractProvider::setEventDispatcher($this->dispatcher);
+        AbstractProvider::setEventDispatcher($this->getDispatcher());
 
         if (! is_null($this->statisticsStorage)) {
             $this->dispatcher->useListenerProvider($this->statisticsStorage);
         }
+    }
+
+    /**
+     * Boot payload storage.
+     */
+    protected function bootPayloadStorage()
+    {
+        $this->payloadStorage->setProject($this->getProject());
     }
 
     /**
@@ -154,7 +163,7 @@ class Driver
             try {
                 $this->getProvider($provider)->send($this->notification, $subscribers);
             } catch (\Exception $e) {
-                $this->dispatcher->emit('flush.exception', $e);
+                $this->getDispatcher()->emit('flush.exception', $e);
             }
         }
     }
@@ -170,7 +179,7 @@ class Driver
         $payload = $this->payloadStorage->getPayloadForSubscriber($subscriber);
         $notification = $this->notificationRepository->find($payload['id']);
 
-        $this->dispatcher->emit(new NotificationDelivered($notification));
+        $this->getDispatcher()->emit(new NotificationDelivered($notification));
 
         return $payload;
     }
@@ -183,7 +192,7 @@ class Driver
      */
     public function processClicked(Notification $notification)
     {
-        $this->dispatcher->emit(new NotificationClicked($notification));
+        $this->getDispatcher()->emit(new NotificationClicked($notification));
 
         return $notification->getUrl();
     }

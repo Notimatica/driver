@@ -61,6 +61,24 @@ class SendingTest extends TestCase
         ])->flush();
     }
 
+    /** @test */
+    public function test_send_to_everyone()
+    {
+        $driver = $this->makeDriverWithMockClients(Chrome::NAME);
+        $provider = $driver->getProvider('safari');
+
+        $streamer = m::mock(Streamer::class);
+        $streamer->shouldReceive('write');
+        $streamer->shouldReceive('close');
+        $provider->setStreamer($streamer);
+
+        $notification = $this->makeNotification();
+        $notification->shouldReceive('wasSent')->twice()->with(1);
+        $notification->shouldReceive('wasFailed')->twice()->with(1);
+
+        $driver->send($notification)->flush();
+    }
+
     protected function makeDriverWithMockClients($provider)
     {
         $response = $provider == 'chrome'

@@ -3,9 +3,15 @@
 namespace Notimatica\Driver\Support;
 
 use Notimatica\Driver\Contracts\Notification;
+use Notimatica\Driver\Contracts\Project;
 
 trait MakesUrls
 {
+    /**
+     * @var Project
+     */
+    protected $project;
+
     /**
      * Make onclick url redirect.
      *
@@ -29,7 +35,7 @@ trait MakesUrls
      * @param  Notification $notification
      * @return string
      */
-    protected function makeIcon(Notification $notification = null)
+    protected function makeIconUrl(Notification $notification = null)
     {
         $config = $this->project->getConfig();
 
@@ -62,5 +68,25 @@ trait MakesUrls
     protected function isAbsoluteUrl($url)
     {
         return (bool) preg_match('/^https?:\/\//', $url);
+    }
+
+    /**
+     * Project getter.
+     *
+     * @return Project
+     */
+    public function getProject()
+    {
+        return $this->project;
+    }
+
+    /**
+     * Project setter.
+     *
+     * @param Project $project
+     */
+    public function setProject(Project $project)
+    {
+        $this->project = $project;
     }
 }

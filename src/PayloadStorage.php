@@ -12,21 +12,6 @@ abstract class PayloadStorage
     use MakesUrls;
 
     /**
-     * @var Project
-     */
-    private $project;
-
-    /**
-     * Create a new PayloadStorage.
-     *
-     * @param Project $project
-     */
-    public function __construct(Project $project)
-    {
-        $this->project = $project;
-    }
-
-    /**
      * Search and return payload for subscriber.
      *
      * @param  Subscriber $subscriber
@@ -58,7 +43,7 @@ abstract class PayloadStorage
             'id' => $notification->getId(),
             'title' => $notification->getTitle(),
             'body' => $notification->getBody(),
-            'icon' => $this->makeIcon($notification),
+            'icon' => $this->makeIconUrl($notification),
             'tag' => $this->makeTag($notification),
         ];
     }
@@ -70,6 +55,6 @@ abstract class PayloadStorage
      */
     protected function makeTag($notification)
     {
-        return md5($this->project->getBaseUrl());
+        return hash('md5', $this->project->getBaseUrl());
     }
 }
