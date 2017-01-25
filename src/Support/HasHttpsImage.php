@@ -31,5 +31,4 @@ trait HasHttpsImage
                   $parsed['scheme'] == 'ssl'   ||
                   preg_match('/192\.168|localhost|images\.weserv\.nl/', $parsed['host']));
     }
-
 }

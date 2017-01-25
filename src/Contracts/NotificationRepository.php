@@ -36,7 +36,7 @@ interface NotificationRepository
      *
      * @param  Notification $notification
      * @param  string $column
-     * @param  integer $value
+     * @param  int $value
      */
     public function increment(Notification $notification, $column, $value = 1);
 }

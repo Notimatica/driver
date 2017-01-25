@@ -58,7 +58,7 @@ trait MakesUrls
     }
 
     /**
-     * Check if url is absolute
+     * Check if url is absolute.
      *
      * @param  string $url
      * @return bool

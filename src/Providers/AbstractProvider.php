@@ -2,12 +2,10 @@
 
 namespace Notimatica\Driver\Providers;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Pool;
 use League\Event\EmitterInterface;
 use Notimatica\Driver\Contracts\Notification;
-use Notimatica\Driver\Contracts\Subscriber;
 use Notimatica\Driver\Contracts\Project;
+use Notimatica\Driver\Contracts\Subscriber;
 
 abstract class AbstractProvider
 {
@@ -45,7 +43,7 @@ abstract class AbstractProvider
     /**
      * If provider is enabled.
      *
-     * @return boolean
+     * @return bool
      */
     abstract public function isEnabled();
 

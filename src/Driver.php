@@ -65,8 +65,7 @@ class Driver
         SubscriberRepository $subscriberRepository,
         PayloadStorageContract $payloadStorage = null,
         StatisticsHandler $statisticsHandler = null
-    )
-    {
+    ) {
         $this->project = $project;
         $this->dispatcher = $dispatcher;
         $this->notificationRepository = $notificationRepository;
@@ -242,7 +241,7 @@ class Driver
      */
     public static function getConfig()
     {
-        return require(__DIR__ . '/../config/notimatica.php');
+        return require __DIR__ . '/../config/notimatica.php';
     }
 
     /**
@@ -266,7 +265,7 @@ class Driver
     }
 
     /**
-     * Events dispatcher
+     * Events dispatcher.
      *
      * @return EmitterInterface
      */

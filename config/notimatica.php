@@ -34,12 +34,12 @@ return [
                     'icon_64'   => 'icon_32x32@2x.png',
                     'icon_128'  => 'icon_128x128.png',
                     'icon_256'  => 'icon_128x128@2x.png',
-                ]
+                ],
             ],
         ],
     ],
     'payload' => [
         'lifetime' => 86400,
         'retrieve_url' => '/payload',
-    ]
+    ],
 ];

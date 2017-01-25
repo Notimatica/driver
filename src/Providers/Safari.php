@@ -3,14 +3,12 @@
 namespace Notimatica\Driver\Providers;
 
 use League\Flysystem\FilesystemInterface;
-use Notimatica\Driver\Apns\Certificate;
 use Notimatica\Driver\Apns\Package;
 use Notimatica\Driver\Apns\Payload;
 use Notimatica\Driver\Apns\Streamer;
 use Notimatica\Driver\Contracts\Notification;
 use Notimatica\Driver\Contracts\Project;
 use Notimatica\Driver\Contracts\Subscriber;
-use Notimatica\Driver\Driver;
 use Notimatica\Driver\Events\NotificationFailed;
 use Notimatica\Driver\Events\NotificationSent;
 use Notimatica\Driver\Support\MakesUrls;
@@ -132,7 +130,7 @@ class Safari extends AbstractProvider
     /**
      * If provider is enabled.
      *
-     * @return boolean
+     * @return bool
      */
     public function isEnabled()
     {

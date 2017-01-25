@@ -37,7 +37,7 @@ class Certificate
         try {
             return $this->storage->read($this->files['p12']);
         } catch (\Exception $e) {
-            return null;
+            return;
         }
     }
 
@@ -51,7 +51,7 @@ class Certificate
         try {
             return $this->storage->read($this->files['password']);
         } catch (\Exception $e) {
-            return null;
+            return;
         }
     }
 
@@ -65,7 +65,7 @@ class Certificate
         try {
             return $this->storage->read($this->files['pem']);
         } catch (\Exception $e) {
-            return null;
+            return;
         }
     }
 
@@ -79,7 +79,6 @@ class Certificate
         return $this->storage->getAdapter()->applyPathPrefix($this->files['pem']);
     }
 
-
     /**
      * Convert p12 to pem.
      *
@@ -92,11 +91,11 @@ class Certificate
         $p12 = $this->getP12Certificate();
 
         if (empty($p12)) {
-            return null;
+            return;
         }
 
         if (! openssl_pkcs12_read($p12, $certificate, $this->getPassword())) {
-            throw new \RuntimeException("Certificate or password is invalid.");
+            throw new \RuntimeException('Certificate or password is invalid.');
         }
 
         if (isset($certificate['cert'])) {

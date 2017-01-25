@@ -2,13 +2,10 @@
 
 namespace Notimatica\Driver\Providers;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Notimatica\Driver\Contracts\Notification;
 use Notimatica\Driver\Contracts\Subscriber;
-use Notimatica\Driver\Driver;
 use Notimatica\Driver\Events\NotificationFailed;
 use Notimatica\Driver\Events\NotificationSent;
 use Notimatica\Driver\Support\ProviderWithHttpClient;
@@ -94,7 +91,7 @@ class Firefox extends ProviderWithHttpClient
     /**
      * If provider is enabled.
      *
-     * @return boolean
+     * @return bool
      */
     public function isEnabled()
     {
