@@ -47,7 +47,7 @@ class Streamer
      * Writes a binary message to APNS.
      *
      * @param  string $binaryMessage
-     * @return int Returns the number of bytes written, or FALSE on error.
+     * @return bool
      * @throws \InvalidArgumentException
      */
     public function write($binaryMessage)
@@ -60,7 +60,7 @@ class Streamer
             );
         }
 
-        return fwrite($this->getApnsResource(), $binaryMessage, $length);
+        return (bool) fwrite($this->getApnsResource(), $binaryMessage, $length);
     }
 
     /**

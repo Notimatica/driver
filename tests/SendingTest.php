@@ -3,10 +3,8 @@
 namespace Notimatica\Driver\Tests;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Mockery as m;
 use Notimatica\Driver\Apns\Streamer;

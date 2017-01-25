@@ -9,8 +9,8 @@ use Notimatica\Driver\Contracts\NotificationRepository;
 use Notimatica\Driver\Contracts\Subscriber;
 use Notimatica\Driver\Contracts\SubscriberRepository;
 use Notimatica\Driver\Driver;
-use Notimatica\Driver\PayloadStorage;
 use Notimatica\Driver\NotimaticaProject;
+use Notimatica\Driver\PayloadStorage;
 use Notimatica\Driver\Providers\AbstractProvider;
 use Notimatica\Driver\Providers\Chrome;
 use Notimatica\Driver\Providers\Firefox;
@@ -200,7 +200,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     {
         $repository = m::mock(NotificationRepository::class);
         $repository->shouldReceive('all')->andReturn([
-            $this->makeNotification()
+            $this->makeNotification(),
         ]);
         $repository->shouldReceive('make')->andReturn($this->makeNotification());
 

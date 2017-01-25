@@ -2,7 +2,6 @@
 
 namespace Notimatica\Driver\Tests\Support;
 
-use Mockery as m;
 use Notimatica\Driver\Support\HasHttpsImage;
 use Notimatica\Driver\Tests\TestCase;
 
