@@ -108,7 +108,7 @@ class Safari extends AbstractProvider
             'websitePushID' => $this->config['website_push_id'],
             'allowedDomains' => [$this->project->getBaseUrl()],
             'urlFormatString' => $this->makeClickUrl() . '/%@',
-            'webServiceURL' => $this->formatUrlFromConfig($this->config['subscribe_url']),
+            'webServiceURL' => $this->formatUrlFrom($this->config['subscribe_url']),
         ], $extra);
 
         return $this->makePackage($website)->generate();

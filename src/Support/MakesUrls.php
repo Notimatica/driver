@@ -20,13 +20,15 @@ trait MakesUrls
      */
     public function makeClickUrl(Notification $notification = null)
     {
-        $config = $this->project->getConfig();
-
-        if (empty($config['payload']['click_url'])) {
-            throw new \RuntimeException('Payload url is invalid');
+        if (! is_null($notification)) {
+            $url = $notification->getUrl();
         }
 
-        return $this->formatUrlFromConfig($config['payload']['click_url']);
+        if (empty($url)) {
+            $url = $this->getProject()->getBaseUrl();
+        }
+
+        return $this->formatUrlFrom($url);
     }
 
     /**
@@ -35,15 +37,11 @@ trait MakesUrls
      * @param  Notification $notification
      * @return string
      */
-    protected function makeIconUrl(Notification $notification = null)
+    public function makeIconUrl(Notification $notification = null)
     {
-        $config = $this->project->getConfig();
+        $icon = $this->getProject()->getIcon();
 
-        if (empty($config['icon'])) {
-            return null;
-        }
-
-        return $this->formatUrlFromConfig($config['icon']);
+        return $this->formatUrlFrom($icon);
     }
 
     /**
@@ -52,10 +50,10 @@ trait MakesUrls
      * @param  string $url
      * @return string
      */
-    protected function formatUrlFromConfig($url)
+    protected function formatUrlFrom($url)
     {
         return ! $this->isAbsoluteUrl($url)
-            ? trim($this->project->getBaseUrl(), '/') . '/' . $url
+            ? trim($this->getProject()->getBaseUrl(), '/') . '/' . ltrim($url, '/')
             : $url;
     }
 

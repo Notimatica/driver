@@ -15,6 +15,10 @@ class NotimaticaProject implements Project
      */
     public $baseUrl;
     /**
+     * @var string
+     */
+    private $icon;
+    /**
      * @var array
      */
     public $config = [];
@@ -24,13 +28,15 @@ class NotimaticaProject implements Project
      *
      * @param string $name
      * @param string $baseUrl
+     * @param string $icon
      * @param array $config
      */
-    public function __construct($name, $baseUrl, array $config = [])
+    public function __construct($name, $baseUrl, $icon, array $config = [])
     {
         $this->name = $name;
         $this->baseUrl = $baseUrl;
-        $this->config = $config;;
+        $this->icon = $icon;
+        $this->config = $config;
     }
 
     /**
@@ -51,6 +57,16 @@ class NotimaticaProject implements Project
     public function getBaseUrl()
     {
         return $this->baseUrl;
+    }
+
+    /**
+     * Returns project's base icon.
+     *
+     * @return string
+     */
+    public function getIcon()
+    {
+        return $this->icon;
     }
 
     /**

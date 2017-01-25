@@ -8,22 +8,28 @@ trait HasHttpsImage
      * Ensure image is https.
      *
      * @param  string $image
-     * @return string
+     * @return string|null
      */
     public function ensureHttps($image)
     {
-        if (! $image) {
-            return;
-        }
+        return ! empty($image) && $this->needToReplace($image)
+            ? 'https://images.weserv.nl/?url=' . str_replace('http://', '', $image)
+            : $image;
+    }
 
+    /**
+     * Check if url needs to be replaced.
+     *
+     * @param  string $image
+     * @return bool
+     */
+    protected function needToReplace($image)
+    {
         $parsed = parse_url($image);
 
-        if ($parsed['scheme'] == 'https' ||
-            $parsed['scheme'] == 'ssl'   ||
-            preg_match('/192\.168|localhost|images\.weserv\.nl/', $parsed['host'])) {
-            return $image;
-        }
-
-        return 'https://images.weserv.nl/?url=' . str_replace('http://', '', $image);
+        return ! ($parsed['scheme'] == 'https' ||
+                  $parsed['scheme'] == 'ssl'   ||
+                  preg_match('/192\.168|localhost|images\.weserv\.nl/', $parsed['host']));
     }
+
 }

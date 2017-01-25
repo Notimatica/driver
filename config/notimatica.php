@@ -39,8 +39,7 @@ return [
         ],
     ],
     'payload' => [
-        'subscriber_lifetime' => 86400,
+        'lifetime' => 86400,
         'retrieve_url' => '/payload',
-        'click_url' => '/click'
     ]
 ];

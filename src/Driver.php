@@ -208,7 +208,7 @@ class Driver
     {
         $partials = [];
         $config = $this->getProject()->getConfig();
-        $payloadLifetime = $config['payload']['subscriber_lifetime'];
+        $payloadLifetime = $config['payload']['lifetime'];
 
         foreach ($subscribers as $subscriber) {
             $provider = $subscriber->getProvider();
@@ -236,6 +236,16 @@ class Driver
     }
 
     /**
+     * Helper to return default package config.
+     *
+     * @return array
+     */
+    public static function getConfig()
+    {
+        return require(__DIR__ . '/../config/notimatica.php');
+    }
+
+    /**
      * Project getter.
      *
      * @return Project
@@ -253,16 +263,6 @@ class Driver
     public function setProject(Project $project)
     {
         $this->project = $project;
-    }
-
-    /**
-     * Helper to return default package config.
-     *
-     * @return array
-     */
-    public static function getConfig()
-    {
-        return require(__DIR__ . '/../config/notimatica.php');
     }
 
     /**

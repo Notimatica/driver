@@ -47,4 +47,11 @@ interface Project
      * @return bool
      */
     public function hasProvider($name);
+
+    /**
+     * Returns project's base icon.
+     *
+     * @return string
+     */
+    public function getIcon();
 }

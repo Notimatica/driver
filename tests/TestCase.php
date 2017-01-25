@@ -141,7 +141,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
      */
     protected function makeProject()
     {
-        return new NotimaticaProject('Test Project', 'http://localhost', $this->getConfig());
+        return new NotimaticaProject('Test Project', 'https://localhost', 'https://localhost/icon.png', $this->getConfig());
     }
 
     /**
@@ -216,7 +216,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         $notification->shouldReceive('getId')->andReturn('05350612-c647-41e0-acbe-8d3eb0a19855');
         $notification->shouldReceive('getTitle')->andReturn('Test title');
         $notification->shouldReceive('getBody')->andReturn('Notification body with long long long long long long long long long long long body to trim.');
-        $notification->shouldReceive('getUrl')->andReturn('https://foo.bar');
+        $notification->shouldReceive('getUrl')->andReturn('/click');
 
         return $notification;
     }

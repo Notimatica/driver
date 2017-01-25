@@ -54,7 +54,7 @@ abstract class ProviderWithHttpClient extends AbstractProvider
             $fail = function ($reason, $index) {};
         }
 
-        $pool = new Pool($this->client, $this->prepareRequests($subscribers), [
+        $pool = new Pool($this->getClient(), $this->prepareRequests($subscribers), [
             'concurrency' => $this->config['concurrent_requests'],
             'fulfilled'   => $success,
             'rejected'    => $fail,
