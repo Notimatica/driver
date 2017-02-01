@@ -71,8 +71,8 @@ class SendingTest extends TestCase
         $provider->setStreamer($streamer);
 
         $notification = $this->makeNotification();
-        $notification->shouldReceive('wasSent')->twice()->with(1);
-        $notification->shouldReceive('wasFailed')->twice()->with(1);
+        $notification->shouldReceive('wasSent')->once()->with(1);
+        $notification->shouldReceive('wasFailed')->times(3)->with(1);
 
         $driver->send($notification)->flush();
     }
